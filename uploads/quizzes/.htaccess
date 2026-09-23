@@ -1,0 +1,17 @@
+# Larang eksekusi skrip apa pun di dalam folder ini.
+# File di sini adalah HTML latihan soal yang diunggah lewat admin — harus disajikan
+# sebagai teks/HTML statis, tidak pernah dieksekusi sebagai kode server.
+
+Options -Indexes -ExecCGI
+AddHandler default-handler .php .php3 .php4 .php5 .php7 .phtml .pl .py .cgi .asp .aspx
+
+<IfModule mod_php7.c>
+    php_flag engine off
+</IfModule>
+<IfModule mod_php8.c>
+    php_admin_flag engine off
+</IfModule>
+
+<FilesMatch "\.(php|php[3-8]?|phtml|pl|py|cgi|sh)$">
+    Require all denied
+</FilesMatch>

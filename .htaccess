@@ -1,0 +1,25 @@
+# Ruang Sinau — konfigurasi Apache
+
+# Jangan izinkan penjelajahan direktori
+Options -Indexes
+
+# Halaman 404 kustom
+ErrorDocument 404 /404.php
+
+# Sembunyikan file konfigurasi & database dari akses langsung
+<FilesMatch "\.(sql|env|log|md)$">
+    Require all denied
+</FilesMatch>
+
+# Header keamanan dasar
+<IfModule mod_headers.c>
+    Header set X-Content-Type-Options "nosniff"
+    Header set X-Frame-Options "SAMEORIGIN"
+    Header set Referrer-Policy "strict-origin-when-cross-origin"
+    Header set Permissions-Policy "geolocation=(), microphone=(), camera=()"
+</IfModule>
+
+# Cegah eksekusi PHP di folder unggahan (lihat juga uploads/quizzes/.htaccess)
+<IfModule mod_php7.c>
+    php_flag engine off
+</IfModule>

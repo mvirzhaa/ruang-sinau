@@ -1,0 +1,928 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Latihan Komposisi & Dekomposisi Bangun Datar Seru - Kelas 4 SD</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/blueimp-md5/2.19.0/js/md5.min.js"></script>
+<style>
+  :root{
+    --primary:#4A90E2;
+    --primary-dark:#3B7DC4;
+    --purple:#9B59B6;
+    --success:#2ECC71;
+    --danger:#E74C3C;
+    --yellow:#F1C40F;
+    --orange:#FF9F43;
+    --bg:#FDF6EC;
+    --card:#FFFFFF;
+    --text:#2C3E50;
+    --radius:24px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family:'Segoe UI', 'Trebuchet MS', sans-serif;
+    background:linear-gradient(135deg,#a1c4fd 0%,#c2e9fb 40%,#fbc2eb 100%);
+    min-height:100vh;
+    display:flex;
+    align-items:flex-start;
+    justify-content:center;
+    padding:24px 12px;
+    color:var(--text);
+  }
+  .app{
+    width:100%;
+    max-width:680px;
+  }
+  .app-header{
+    text-align:center;
+    margin-bottom:18px;
+  }
+  .app-header h2{
+    font-size:24px;
+    margin:0 0 4px;
+    color:var(--text);
+    text-shadow:2px 2px 0 rgba(255,255,255,0.6);
+  }
+  .app-header p{
+    margin:0;
+    color:#555;
+    font-size:14px;
+  }
+  .card{
+    background:var(--card);
+    border-radius:var(--radius);
+    padding:28px;
+    box-shadow:0 12px 30px rgba(0,0,0,0.12);
+    position:relative;
+    overflow:hidden;
+  }
+  .card::before{
+    content:"";
+    position:absolute;
+    top:-40px;right:-40px;
+    width:120px;height:120px;
+    background:radial-gradient(circle,var(--yellow),transparent 70%);
+    opacity:0.5;
+    border-radius:50%;
+  }
+  h1{
+    font-size:1.5rem;
+    color:var(--text);
+    margin:0 0 4px;
+    text-align:center;
+  }
+  .subtitle{
+    text-align:center;
+    color:#6B7280;
+    font-size:0.9rem;
+    margin-bottom:20px;
+  }
+  .progress-wrap{
+    background:#eee;
+    border-radius:20px;
+    height:14px;
+    overflow:hidden;
+    margin-bottom:6px;
+  }
+  .progress-bar{
+    height:100%;
+    background:linear-gradient(90deg,var(--primary),var(--purple));
+    width:0%;
+    transition:width .3s ease;
+    border-radius:20px;
+  }
+  .progress-label{
+    text-align:right;
+    font-size:0.8rem;
+    color:#6B7280;
+    margin-bottom:18px;
+  }
+  .question-badge{
+    display:inline-block;
+    font-weight:bold;
+    color:var(--purple);
+    font-size:14px;
+    margin-bottom:6px;
+    background:none;
+    padding:0;
+    border-radius:0;
+  }
+  .question-text{
+    font-size:19px;
+    font-weight:600;
+    color:var(--text);
+    margin-bottom:20px;
+    line-height:1.4;
+  }
+  .visual-wrap{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    margin-bottom:18px;
+    padding:14px;
+    background:#F8FAFC;
+    border:2px dashed #dbe6f2;
+    border-radius:16px;
+  }
+  .visual-wrap:empty{
+    display:none;
+    margin-bottom:0;
+    padding:0;
+    border:none;
+  }
+  .bar-chart{
+    width:100%;
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+  }
+  .bar-row{
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .bar-label{
+    width:100px;
+    font-size:0.85rem;
+    font-weight:700;
+    color:var(--text);
+    flex-shrink:0;
+    text-align:right;
+  }
+  .bar-track{
+    flex:1;
+    background:#eee;
+    border-radius:8px;
+    height:28px;
+    overflow:hidden;
+    position:relative;
+  }
+  .bar-fill{
+    height:100%;
+    border-radius:8px;
+    display:flex;
+    align-items:center;
+    justify-content:flex-end;
+    padding-right:8px;
+    color:#fff;
+    font-weight:800;
+    font-size:0.8rem;
+    transition:width .3s ease;
+  }
+  .fraction-label{
+    text-align:center;
+    font-weight:800;
+    font-size:1.1rem;
+    color:var(--purple);
+    margin-top:8px;
+  }
+  .percent-grid{
+    display:grid;
+    grid-template-columns:repeat(10, 16px);
+    grid-template-rows:repeat(10, 16px);
+    gap:1px;
+    background:#dbe6f2;
+    padding:2px;
+    border-radius:6px;
+  }
+  .percent-cell{
+    width:16px;height:16px;
+    background:#F8FAFC;
+  }
+  .percent-cell.filled{
+    background:var(--success);
+  }
+  .money-row{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+    justify-content:center;
+    align-items:center;
+  }
+  .money-bill{
+    padding:10px 14px;
+    background:linear-gradient(135deg,#2ECC71,#27AE60);
+    color:#fff;
+    font-weight:800;
+    font-size:0.85rem;
+    border-radius:8px;
+    box-shadow:0 3px 8px rgba(46,204,113,0.35);
+    border:2px dashed rgba(255,255,255,0.6);
+  }
+  .money-coin{
+    width:52px;height:52px;
+    border-radius:50%;
+    background:linear-gradient(135deg,var(--yellow),var(--orange));
+    color:#fff;
+    font-weight:800;
+    font-size:0.7rem;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    box-shadow:0 3px 8px rgba(255,159,67,0.4);
+    border:2px solid rgba(255,255,255,0.6);
+    text-align:center;
+  }
+  .options{
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+  }
+  .option-btn{
+    text-align:left;
+    padding:14px 16px;
+    border-radius:14px;
+    border:2px solid #e1e8f0;
+    background:#F8FAFC;
+    font-size:16px;
+    cursor:pointer;
+    transition:all .15s ease;
+    font-family:inherit;
+    color:var(--text);
+  }
+  .option-btn:hover:not(:disabled){
+    border-color:var(--primary);
+    background:#EAF3FF;
+    transform:translateY(-2px);
+  }
+  .option-btn:disabled{
+    cursor:default;
+  }
+  .option-btn.correct{
+    background:#DFF7E3;
+    border-color:var(--success);
+    color:#1E7C3B;
+    font-weight:bold;
+  }
+  .option-btn.wrong{
+    background:#FDE4E1;
+    border-color:var(--danger);
+    color:#B92B20;
+    font-weight:bold;
+  }
+  .feedback{
+    margin-top:18px;
+    padding:16px;
+    border-radius:14px;
+    font-size:15px;
+    line-height:1.5;
+    display:none;
+  }
+  .feedback.show{display:block; animation:pop .3s ease;}
+  @keyframes pop{from{transform:scale(.95);opacity:0;}to{transform:scale(1);opacity:1;}}
+  .feedback.correct-fb{background:#DFF7E3; border-left:6px solid var(--success);}
+  .feedback.wrong-fb{background:#FDE4E1; border-left:6px solid var(--danger);}
+  .feedback-title{font-weight:bold; margin-bottom:6px; font-size:16px;}
+  .next-btn{
+    margin-top:18px;
+    width:100%;
+    padding:14px;
+    border:none;
+    border-radius:14px;
+    background:linear-gradient(90deg,var(--primary),var(--purple));
+    color:white;
+    font-size:16px;
+    font-weight:bold;
+    cursor:pointer;
+    display:none;
+  }
+  .next-btn.show{display:block;}
+  .next-btn:hover{filter:brightness(1.05);}
+  .start-screen, .result-screen{text-align:center;}
+  .start-screen p, .result-screen p{color:#555; line-height:1.6;}
+  .big-emoji{font-size:64px; margin-bottom:10px;}
+  .start-btn{
+    margin-top:10px;
+    padding:16px 26px;
+    width:100%;
+    border:none;
+    border-radius:16px;
+    background:linear-gradient(90deg,var(--orange),var(--danger));
+    color:white;
+    font-size:17px;
+    font-weight:bold;
+    cursor:pointer;
+  }
+  .start-btn:hover{filter:brightness(1.05);}
+  .form-group{
+    text-align:left;
+    margin-bottom:14px;
+  }
+  .form-group label{
+    display:block;
+    font-weight:bold;
+    color:var(--text);
+    margin-bottom:6px;
+    font-size:0.95rem;
+  }
+  .form-group input{
+    width:100%;
+    padding:13px 14px;
+    border-radius:12px;
+    border:2px solid #e1e8f0;
+    font-size:15px;
+    font-family:inherit;
+  }
+  .form-group input:focus{
+    outline:none;
+    border-color:var(--primary);
+  }
+  .score-circle{
+    width:140px;height:140px;
+    border-radius:50%;
+    background:linear-gradient(135deg,var(--primary),var(--purple));
+    color:#fff;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    margin:10px auto 18px;
+    box-shadow:0 10px 30px rgba(74,144,226,0.35);
+  }
+  .score-circle .num{font-size:2.2rem; font-weight:800; line-height:1;}
+  .score-circle .of{font-size:0.85rem; opacity:0.9;}
+  .stars{
+    font-size:32px;
+    margin:10px 0 20px;
+    letter-spacing:4px;
+  }
+  .hidden{display:none !important;}
+  .download-btn{
+    margin-top:10px;
+    width:100%;
+    padding:15px;
+    border:none;
+    border-radius:16px;
+    background:linear-gradient(90deg,var(--yellow),var(--orange));
+    color:#2C3E50;
+    font-size:1.05rem;
+    font-weight:800;
+    cursor:pointer;
+    box-shadow:0 8px 20px rgba(255,159,67,0.4);
+  }
+  .download-btn:hover{filter:brightness(1.05);}
+  .cert-note{
+    font-size:0.8rem;
+    color:#9CA3AF;
+    margin-top:14px;
+  }
+  .footer-icon{
+    text-align:center;
+    font-size:2rem;
+    margin-bottom:6px;
+  }
+  .app-footer{
+    text-align:center;
+    color:#666;
+    font-size:12px;
+    margin-top:16px;
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="app-header">
+    <h2>🧩 Latihan Komposisi & Dekomposisi Seru</h2>
+    <p>Kelas 4 SD — Menyusun &amp; Mengurai Bangun Datar</p>
+  </div>
+  <div class="card">
+
+    <!-- START SCREEN -->
+    <div id="startScreen" class="start-screen">
+      <div class="big-emoji">🧩🔺⬛</div>
+      <p style="font-size:16px;">Halo adik-adik! Yuk latihan <b>50 soal</b> tentang menyusun (komposisi) dan mengurai (dekomposisi) berbagai bentuk bangun datar dengan lebih dari satu cara. Kerjakan satu per satu ya, pasti bisa!</p>
+      <button class="start-btn" onclick="startQuiz()">Mulai Latihan 🚀</button>
+    </div>
+
+    <!-- QUIZ SCREEN -->
+    <div id="quizScreen" class="hidden">
+      <div class="progress-wrap"><div class="progress-bar" id="progressBar"></div></div>
+      <div class="progress-label" id="progressLabel">Soal 1 dari 50</div>
+      <span class="question-badge" id="questionBadge">Soal 1</span>
+      <div class="question-text" id="questionText"></div>
+      <div class="visual-wrap" id="visualWrap"></div>
+      <div class="options" id="optionsWrap"></div>
+      <div class="feedback" id="feedback">
+        <div class="feedback-title" id="feedbackTitle"></div>
+        <div id="feedbackExplain"></div>
+      </div>
+      <button class="next-btn" id="nextBtn" onclick="nextQuestion()">Lanjut ➡️</button>
+    </div>
+
+    <!-- NAME FORM SCREEN -->
+    <div id="formScreen" class="hidden result-screen">
+      <div class="big-emoji">🎉</div>
+      <h1>Latihan Selesai!</h1>
+      <p>Isi data kamu untuk mendapatkan sertifikat ya!</p>
+      <div class="form-group">
+        <label for="studentName">Nama Lengkap</label>
+        <input type="text" id="studentName" placeholder="Contoh: Siti Aminah">
+      </div>
+      <div class="form-group">
+        <label for="schoolName">Asal Sekolah</label>
+        <input type="text" id="schoolName" placeholder="Contoh: SDN Melati 01">
+      </div>
+      <button class="start-btn" onclick="showResult()">Lihat Hasil &amp; Sertifikat 🏆</button>
+    </div>
+
+    <!-- RESULT SCREEN -->
+    <div id="resultScreen" class="hidden result-screen">
+      <div class="big-emoji" id="resultEmoji">🏆</div>
+      <h1 id="resultTitle">Kerja Bagus!</h1>
+      <div class="score-circle">
+        <div class="num" id="scoreNum">0</div>
+        <div class="of">dari 50 benar</div>
+      </div>
+      <div class="stars" id="starsDisplay"></div>
+      <p id="resultMessage"></p>
+      <button class="download-btn" onclick="downloadCertificate()">⬇️ Unduh Sertifikat PDF</button>
+      <p class="cert-note" id="certNumberNote"></p>
+    </div>
+
+  </div>
+  <div class="app-footer">CMP Training &middot; Latihan Matematika Interaktif</div>
+</div>
+
+<script>
+// ================= DATA SOAL (50 soal) =================
+const questions = [
+  {q:"Komposisi bangun datar berarti...", opts:["Menyusun beberapa bangun datar menjadi satu bangun baru","Mengurai satu bangun menjadi beberapa bagian","Menghitung luas bangun datar","Mengukur keliling bangun datar"], correct:0, exp:"Komposisi berarti menyusun atau menggabungkan beberapa bangun datar menjadi satu bangun baru yang lebih besar."},
+  {q:"Dekomposisi bangun datar berarti...", opts:["Menyusun beberapa bangun menjadi satu","Mengurai atau membagi satu bangun menjadi beberapa bagian yang lebih kecil","Mengukur berat bangun datar","Menggambar bangun datar baru"], correct:1, exp:"Dekomposisi berarti mengurai atau membagi satu bangun datar menjadi beberapa bagian yang lebih kecil."},
+  {q:"Perhatikan gambar berikut. Dua segitiga siku-siku digabungkan menjadi bangun apa?", opts:["Lingkaran","Persegi panjang","Segilima","Segienam"], correct:1, exp:"Dua segitiga siku-siku yang digabungkan pada sisi miringnya akan membentuk sebuah persegi panjang.", visual:{type:"composition", pieces:[{shape:"segitiga_siku_kiri", color:"#FBBF24"},{shape:"segitiga_siku_kanan", color:"#F59E0B"}], result:{shape:"persegi_panjang", color:"#10B981"}}},
+  {q:"Perhatikan gambar berikut. Dua trapesium yang sama digabungkan bisa membentuk bangun apa?", opts:["Segienam atau jajar genjang","Lingkaran","Segitiga kecil","Titik"], correct:0, exp:"Dua trapesium yang identik jika disusun dengan posisi terbalik bisa membentuk jajar genjang atau segienam, tergantung cara penggabungannya.", visual:{type:"composition", pieces:[{shape:"trapesium", color:"#60A5FA"},{shape:"trapesium", color:"#3B82F6"}], result:{shape:"jajar_genjang", color:"#A78BFA"}}},
+  {q:"Perhatikan gambar berikut. Empat persegi kecil disusun menjadi bangun apa?", opts:["Segitiga besar","Persegi besar","Lingkaran","Trapesium"], correct:1, exp:"Empat persegi kecil yang disusun dalam susunan 2x2 akan membentuk sebuah persegi besar.", visual:{type:"composition", pieces:[{shape:"persegi_kecil", color:"#F472B6"},{shape:"persegi_kecil", color:"#EC4899"},{shape:"persegi_kecil", color:"#DB2777"}], result:{shape:"persegi", color:"#9D174D"}}},
+  {q:"Benarkah bahwa sebuah persegi bisa disusun dari 2 segitiga siku-siku yang sama besar?", opts:["Benar","Salah"], correct:0, exp:"Benar, jika persegi dibagi menurut garis diagonalnya, akan terbentuk 2 segitiga siku-siku yang sama besar."},
+  {q:"Benarkah bahwa sebuah lingkaran bisa disusun dari beberapa segitiga?", opts:["Benar","Salah"], correct:1, exp:"Salah, lingkaran memiliki sisi lengkung sehingga tidak bisa disusun secara tepat dari bangun bersisi lurus seperti segitiga."},
+  {q:"Manakah dua bangun datar berikut yang jika digabungkan bisa membentuk sebuah persegi?", opts:["2 segitiga siku-siku yang sama besar","1 lingkaran dan 1 segitiga","2 lingkaran","1 trapesium dan 1 lingkaran"], correct:0, exp:"2 segitiga siku-siku yang sama besar bisa digabungkan pada sisi miringnya untuk membentuk sebuah persegi."},
+  {q:"Perhatikan gambar berikut. Bangun persegi ini dibagi dengan garis diagonal menjadi berapa bagian?", opts:["2 bagian","3 bagian","4 bagian","5 bagian"], correct:0, exp:"Garis diagonal membagi persegi menjadi 2 bagian berbentuk segitiga.", visual:{type:"decomposition", shape:"persegi_diagonal", color:"#818CF8"}},
+  {q:"Perhatikan gambar berikut. Bangun persegi ini dibagi dengan garis mendatar menjadi berapa bagian?", opts:["2 bagian","3 bagian","4 bagian","6 bagian"], correct:0, exp:"Garis mendatar membagi persegi menjadi 2 bagian berbentuk persegi panjang.", visual:{type:"decomposition", shape:"persegi_2_horizontal", color:"#34D399"}},
+  {q:"Perhatikan gambar berikut. Bangun persegi ini dibagi dengan 2 garis (mendatar dan tegak) menjadi berapa bagian?", opts:["2 bagian","3 bagian","4 bagian","5 bagian"], correct:2, exp:"2 garis (1 mendatar dan 1 tegak) yang berpotongan di tengah akan membagi persegi menjadi 4 bagian sama besar.", visual:{type:"decomposition", shape:"persegi_4_grid", color:"#FBBF24"}},
+  {q:"Perhatikan gambar berikut. Persegi panjang ini dibagi dengan 1 garis tegak menjadi berapa bagian?", opts:["1 bagian","2 bagian","3 bagian","4 bagian"], correct:1, exp:"1 garis tegak membagi persegi panjang menjadi 2 bagian yang sama besar.", visual:{type:"decomposition", shape:"persegipanjang_2_vertikal", color:"#F472B6"}},
+  {q:"Perhatikan gambar berikut. Persegi panjang ini dibagi dengan 2 garis tegak menjadi berapa bagian?", opts:["2 bagian","3 bagian","4 bagian","5 bagian"], correct:1, exp:"2 garis tegak membagi persegi panjang menjadi 3 bagian sama besar.", visual:{type:"decomposition", shape:"persegipanjang_3_vertikal", color:"#60A5FA"}},
+  {q:"Perhatikan gambar berikut. Segitiga besar ini dibagi dengan garis tegak dari puncak ke alas menjadi berapa bagian?", opts:["2 bagian","3 bagian","4 bagian","1 bagian"], correct:0, exp:"Garis tegak dari puncak ke tengah alas membagi segitiga besar menjadi 2 bagian segitiga yang lebih kecil.", visual:{type:"decomposition", shape:"segitiga_tengah", color:"#FB923C"}},
+  {q:"Perhatikan gambar berikut. Jajar genjang ini dibagi dengan garis diagonal menjadi berapa bagian?", opts:["2 bagian","3 bagian","4 bagian","5 bagian"], correct:0, exp:"Garis diagonal membagi jajar genjang menjadi 2 bagian berbentuk segitiga yang sama besar.", visual:{type:"decomposition", shape:"jajargenjang_diagonal", color:"#A78BFA"}},
+  {q:"Sebuah persegi panjang bisa diurai (dekomposisi) menjadi dua bangun datar apa saja jika dipotong menurut garis diagonalnya?", opts:["2 segitiga","2 persegi","2 lingkaran","2 trapesium"], correct:0, exp:"Jika persegi panjang dipotong menurut garis diagonalnya, akan terbentuk 2 buah segitiga siku-siku."},
+  {q:"Manakah cara yang benar untuk membagi (dekomposisi) sebuah persegi menjadi 4 bagian sama besar?", opts:["Menggambar 2 garis yang saling tegak lurus melalui tengah persegi","Menggambar 1 garis diagonal saja","Menggambar garis lengkung","Tidak bisa dibagi menjadi 4 bagian"], correct:0, exp:"Persegi bisa dibagi menjadi 4 bagian sama besar dengan menggambar 2 garis yang saling tegak lurus melalui titik tengah persegi."},
+  {q:"Apakah sebuah bangun datar bisa diurai dengan lebih dari satu cara berbeda?", opts:["Ya, misalnya persegi bisa dibagi dengan garis diagonal atau garis tengah","Tidak, hanya ada satu cara untuk setiap bangun","Hanya bisa dibagi menjadi 2 bagian saja","Tidak pernah bisa diurai"], correct:0, exp:"Ya, sebuah bangun datar seperti persegi bisa diurai dengan berbagai cara, misalnya dengan garis diagonal, garis tengah horizontal, atau garis tengah vertikal."},
+  {q:"Manakah pasangan bangun yang jika digabungkan bisa membentuk sebuah segienam?", opts:["2 trapesium yang sama","1 lingkaran dan 1 persegi","2 lingkaran","1 segitiga dan 1 lingkaran"], correct:0, exp:"2 trapesium yang identik, jika digabungkan dengan posisi yang tepat, bisa membentuk sebuah segienam."},
+  {q:"Benarkah bahwa sebuah segienam beraturan bisa diurai menjadi 6 segitiga sama sisi?", opts:["Benar","Salah"], correct:0, exp:"Benar, segienam beraturan bisa dibagi dari titik pusatnya menjadi 6 buah segitiga sama sisi yang identik."},
+  {q:"Perhatikan gambar berikut. Dua segitiga sama sisi digabungkan pada salah satu sisinya membentuk bangun apa?", opts:["Persegi","Belah ketupat atau jajar genjang","Lingkaran","Segilima"], correct:1, exp:"Dua segitiga sama sisi yang digabungkan pada salah satu sisinya akan membentuk belah ketupat atau jajar genjang.", visual:{type:"composition", pieces:[{shape:"segitiga_sama_sisi", color:"#4ADE80"},{shape:"segitiga_sama_sisi", color:"#22C55E"}], result:{shape:"jajar_genjang", color:"#F59E0B"}}},
+  {q:"Manakah cara yang BENAR untuk menguraikan persegi panjang menjadi 2 segitiga yang sama besar?", opts:["Memotong menurut salah satu garis diagonalnya","Memotong menurut garis tengah mendatar","Memotong menjadi 4 bagian kecil","Tidak mungkin diuraikan menjadi segitiga"], correct:0, exp:"Memotong persegi panjang menurut salah satu garis diagonalnya akan menghasilkan 2 segitiga siku-siku yang sama besar."},
+  {q:"Jika sebuah persegi diuraikan menjadi 2 bagian menggunakan garis tengah vertikal, bentuk apa yang dihasilkan?", opts:["2 persegi panjang","2 segitiga","2 lingkaran","2 trapesium"], correct:0, exp:"Garis tengah vertikal membagi persegi menjadi 2 bagian berbentuk persegi panjang yang sama besar."},
+  {q:"Manakah pernyataan yang benar tentang komposisi dan dekomposisi bangun datar?", opts:["Keduanya adalah proses yang berlawanan: komposisi menyusun, dekomposisi mengurai","Keduanya adalah proses yang sama persis","Komposisi hanya berlaku untuk lingkaran","Dekomposisi hanya berlaku untuk segitiga"], correct:0, exp:"Komposisi dan dekomposisi adalah dua proses yang berlawanan: komposisi menyusun bangun menjadi satu, sedangkan dekomposisi mengurai satu bangun menjadi beberapa bagian."},
+  {q:"Sebuah bangun segienam beraturan diuraikan menjadi beberapa segitiga sama sisi dari titik pusatnya. Berapa banyak segitiga yang terbentuk?", opts:["4 segitiga","5 segitiga","6 segitiga","8 segitiga"], correct:2, exp:"Segienam beraturan diuraikan dari titik pusatnya akan menghasilkan 6 buah segitiga sama sisi."},
+  {q:"Manakah cara berikut yang TIDAK bisa digunakan untuk menguraikan sebuah persegi?", opts:["Membagi dengan garis diagonal","Membagi dengan garis tengah horizontal","Membagi dengan garis tengah vertikal","Membagi dengan garis lengkung acak tanpa aturan"], correct:3, exp:"Membagi dengan garis lengkung acak tanpa aturan bukan cara yang tepat karena tidak menghasilkan bagian-bagian bangun datar yang jelas dan terukur."},
+  {q:"Perhatikan gambar berikut. Tiga persegi kecil disusun membentuk bangun apa?", opts:["Persegi panjang","Lingkaran","Segitiga","Segilima"], correct:0, exp:"Tiga persegi kecil yang disusun sejajar dalam satu baris akan membentuk sebuah persegi panjang.", visual:{type:"composition", pieces:[{shape:"persegi_kecil", color:"#38BDF8"},{shape:"persegi_kecil", color:"#0EA5E9"},{shape:"persegi_kecil", color:"#0284C7"}], result:{shape:"persegi_panjang", color:"#1E40AF"}}},
+  {q:"Manakah dua bangun berikut yang jika digabungkan bisa membentuk sebuah trapesium?", opts:["1 persegi dan 1 segitiga siku-siku","2 lingkaran","1 lingkaran dan 1 segitiga","2 segienam"], correct:0, exp:"1 persegi (atau persegi panjang) yang digabungkan dengan 1 segitiga siku-siku pada salah satu sisinya bisa membentuk sebuah trapesium."},
+  {q:"Guru meminta siswa menyusun 2 segitiga sama sisi untuk membentuk belah ketupat. Berapa banyak cara berbeda yang mungkin dilakukan untuk menggabungkan kedua segitiga tersebut?", opts:["Hanya 1 cara","Lebih dari 1 cara, tergantung sisi mana yang digabungkan","Tidak mungkin dilakukan","Harus menggunakan 3 segitiga"], correct:1, exp:"Ada lebih dari 1 cara untuk menggabungkan 2 segitiga sama sisi tergantung sisi mana yang saling ditempelkan, meskipun hasil akhirnya bisa jadi bentuk yang berbeda."},
+  {q:"Benarkah bahwa dekomposisi bangun datar berguna untuk memahami cara menghitung luas bangun yang rumit?", opts:["Benar","Salah"], correct:0, exp:"Benar, dengan menguraikan bangun rumit menjadi bangun-bangun sederhana (seperti persegi dan segitiga), luas totalnya bisa dihitung dengan menjumlahkan luas tiap bagian."},
+  {q:"Manakah bangun datar berikut yang PALING SULIT diuraikan menjadi bangun bersisi lurus lainnya secara tepat?", opts:["Persegi","Lingkaran","Persegi panjang","Segitiga"], correct:1, exp:"Lingkaran paling sulit diuraikan menjadi bangun bersisi lurus secara tepat karena bentuknya melengkung."},
+  {q:"Jika sebuah trapesium diuraikan menjadi 1 persegi panjang dan 1 segitiga, apa manfaat dari penguraian tersebut?", opts:["Memudahkan perhitungan luas trapesium dengan menjumlahkan luas kedua bagian","Membuat bangun menjadi lebih rumit","Mengubah trapesium menjadi lingkaran","Tidak ada manfaatnya"], correct:0, exp:"Menguraikan trapesium menjadi bangun sederhana memudahkan perhitungan luas totalnya, karena luas masing-masing bagian sederhana lebih mudah dihitung lalu dijumlahkan."},
+  {q:"Perhatikan gambar berikut. Bangun manakah yang terbentuk dari gabungan 1 persegi dan 2 segitiga siku-siku di kedua sisinya?", opts:["Segienam","Segilima atau bentuk rumah (rumah adat)","Lingkaran","Trapesium"], correct:1, exp:"Gabungan 1 persegi dengan 2 segitiga siku-siku di kedua sisinya bisa membentuk bangun menyerupai segilima atau bentuk rumah.", visual:{type:"composition", pieces:[{shape:"segitiga_siku_kiri", color:"#FDE047"},{shape:"persegi", color:"#FACC15"},{shape:"segitiga_siku_kanan", color:"#EAB308"}], result:{shape:"trapesium", color:"#CA8A04"}}},
+  {q:"Manakah pernyataan berikut yang benar mengenai dekomposisi persegi panjang menjadi 3 bagian?", opts:["Bisa dilakukan dengan menggambar 2 garis sejajar yang membagi rata","Tidak mungkin dilakukan","Hanya bisa dibagi menjadi 2 bagian saja","Harus menggunakan garis lengkung"], correct:0, exp:"Persegi panjang bisa diuraikan menjadi 3 bagian sama besar dengan menggambar 2 garis sejajar yang membaginya secara merata."},
+  {q:"Jika sebuah persegi besar berukuran 4x4 satuan diuraikan menjadi persegi-persegi kecil berukuran 1x1 satuan, berapa banyak persegi kecil yang terbentuk?", opts:["8","12","16","20"], correct:2, exp:"Persegi besar 4x4 satuan bisa diuraikan menjadi 4 x 4 = 16 persegi kecil berukuran 1x1 satuan."},
+  {q:"Jika sebuah persegi panjang berukuran 3x2 satuan diuraikan menjadi persegi-persegi kecil berukuran 1x1 satuan, berapa banyak persegi kecil yang terbentuk?", opts:["4","5","6","8"], correct:2, exp:"Persegi panjang 3x2 satuan bisa diuraikan menjadi 3 x 2 = 6 persegi kecil berukuran 1x1 satuan."},
+  {q:"Manakah dua bangun datar berikut yang TIDAK bisa digabungkan untuk membentuk bangun bersisi lurus lainnya secara sempurna?", opts:["2 segitiga siku-siku sama besar","2 persegi sama besar","1 lingkaran dan bangun bersisi lurus apapun","2 trapesium sama besar"], correct:2, exp:"Lingkaran memiliki sisi lengkung, sehingga sulit digabungkan secara sempurna dengan bangun bersisi lurus untuk membentuk bangun baru yang rapi."},
+  {q:"Benarkah bahwa satu bangun datar bisa diuraikan menjadi kombinasi bangun yang berbeda-beda, tergantung cara memotongnya?", opts:["Benar","Salah"], correct:0, exp:"Benar, satu bangun datar bisa diuraikan dengan berbagai cara berbeda menghasilkan kombinasi bangun-bangun kecil yang berbeda pula."},
+  {q:"Manakah langkah yang tepat saat menyusun (komposisi) beberapa bangun datar menjadi satu bangun baru?", opts:["Menempatkan sisi-sisi bangun agar saling berimpit tanpa celah atau tumpang tindih","Menempatkan bangun secara acak tanpa memperhatikan sisi","Menumpuk bangun satu di atas yang lain","Mengabaikan bentuk sisi masing-masing bangun"], correct:0, exp:"Saat menyusun bangun datar, sisi-sisi bangun harus saling berimpit tanpa celah atau tumpang tindih agar terbentuk bangun baru yang rapi."},
+  {q:"Perhatikan gambar berikut. Bangun jajar genjang ini diuraikan dengan garis diagonal menjadi berapa bagian?", opts:["2 bagian","3 bagian","4 bagian","1 bagian"], correct:0, exp:"Garis diagonal membagi jajar genjang menjadi 2 bagian berbentuk segitiga yang sama besar.", visual:{type:"decomposition", shape:"jajargenjang_diagonal", color:"#F472B6"}},
+  {q:"Sebuah persegi panjang berukuran besar diuraikan menjadi 2 persegi panjang kecil yang sama besar dengan garis vertikal. Manakah pernyataan yang benar?", opts:["Luas kedua bagian sama besar, masing-masing setengah dari luas awal","Luas kedua bagian selalu berbeda","Bangun tidak bisa diuraikan dengan cara ini","Hasilnya berbentuk segitiga"], correct:0, exp:"Jika dibagi tepat di tengah dengan garis vertikal, kedua persegi panjang kecil yang terbentuk memiliki luas yang sama, yaitu setengah dari luas bangun awal."},
+  {q:"Manakah kombinasi bangun berikut yang bisa disusun menjadi sebuah persegi panjang?", opts:["2 segitiga siku-siku yang identik","2 lingkaran","1 lingkaran dan 1 segitiga","2 segilima"], correct:0, exp:"2 segitiga siku-siku yang identik bisa disusun bersama pada sisi miringnya untuk membentuk sebuah persegi panjang."},
+  {q:"Mengapa penting bagi siswa mempelajari komposisi dan dekomposisi bangun datar?", opts:["Untuk memahami hubungan antar bangun datar dan memudahkan perhitungan luas","Agar bisa menggambar dengan cepat tanpa memahami bentuknya","Karena tidak ada manfaatnya","Hanya untuk pelajaran seni rupa"], correct:0, exp:"Mempelajari komposisi dan dekomposisi membantu siswa memahami hubungan antar bangun datar serta memudahkan perhitungan luas bangun yang lebih rumit."},
+  {q:"Benarkah bahwa sebuah trapesium bisa disusun dari gabungan 1 persegi panjang dan 2 segitiga siku-siku di kedua sisinya?", opts:["Benar","Salah"], correct:0, exp:"Benar, trapesium bisa disusun dari gabungan 1 persegi panjang di tengah dengan 2 segitiga siku-siku di kedua sisinya."},
+  {q:"Manakah cara yang benar untuk menguraikan sebuah segitiga sama sisi menjadi 2 segitiga siku-siku yang sama besar?", opts:["Menarik garis tegak lurus dari puncak ke tengah alas","Menarik garis dari salah satu sudut ke sudut lainnya secara sembarang","Tidak mungkin dilakukan","Membaginya menjadi 4 bagian kecil"], correct:0, exp:"Menarik garis tegak lurus dari puncak segitiga sama sisi ke titik tengah alasnya akan menghasilkan 2 segitiga siku-siku yang sama besar."},
+  {q:"Perhatikan gambar berikut. Bangun persegi panjang ini diuraikan menjadi berapa bagian dengan 2 garis vertikal yang membagi rata?", opts:["2 bagian","3 bagian","4 bagian","5 bagian"], correct:1, exp:"2 garis vertikal yang membagi rata akan menghasilkan 3 bagian sama besar pada persegi panjang.", visual:{type:"decomposition", shape:"persegipanjang_3_vertikal", color:"#4ADE80"}},
+  {q:"Manakah bangun berikut yang bisa disusun dari kombinasi 6 segitiga sama sisi identik yang digabungkan pada titik pusatnya?", opts:["Segienam beraturan","Lingkaran","Persegi","Trapesium"], correct:0, exp:"6 segitiga sama sisi identik yang digabungkan pada titik pusatnya akan membentuk sebuah segienam beraturan."},
+  {q:"Jika kamu memiliki 2 trapesium yang identik, sebutkan salah satu bangun yang bisa terbentuk jika keduanya digabungkan!", opts:["Segienam atau jajar genjang","Lingkaran","Titik","Garis lurus"], correct:0, exp:"2 trapesium identik yang digabungkan dengan posisi yang tepat bisa membentuk segienam atau jajar genjang, tergantung sisi mana yang digabungkan."},
+  {q:"Manakah pernyataan yang benar tentang menyusun bangun datar dengan lebih dari satu cara?", opts:["Bangun yang sama bisa disusun dari kombinasi potongan yang berbeda-beda","Setiap bangun hanya memiliki satu cara penyusunan","Penyusunan bangun datar selalu menghasilkan bentuk yang sama","Tidak mungkin ada lebih dari satu cara"], correct:0, exp:"Bangun datar yang sama bisa disusun dari berbagai kombinasi potongan yang berbeda-beda, tergantung cara menggabungkannya."},
+  {q:"Perhatikan gambar berikut. Bangun ini (persegi) diuraikan dengan garis diagonal. Jika kedua bagian hasil urai digabung kembali dengan posisi terbalik, bangun apa yang mungkin terbentuk?", opts:["Bisa membentuk bangun lain seperti jajar genjang jika disusun ulang secara kreatif","Selalu kembali menjadi persegi yang sama","Selalu menjadi lingkaran","Tidak bisa disusun ulang sama sekali"], correct:0, exp:"Dua segitiga hasil penguraian persegi bisa disusun ulang dengan berbagai cara kreatif, salah satunya membentuk bangun lain seperti jajar genjang.", visual:{type:"decomposition", shape:"persegi_diagonal", color:"#FCA5A5"}}
+];
+function shuffleArray(arr){
+  for(let i = arr.length - 1; i > 0; i--){
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
+// Acak urutan soal, dan acak juga urutan pilihan jawaban di tiap soal
+// ================= VISUALISASI GAMBAR =================
+// Menggambar lingkaran pecahan: total 'parts' bagian, 'shaded' bagian diarsir warna
+function renderFractionCircle(parts, shaded){
+  const size = 160;
+  const cx = 80, cy = 80, r = 65;
+  let slices = "";
+  const anglePerSlice = 360 / parts;
+  for(let i = 0; i < parts; i++){
+    const startAngle = (i * anglePerSlice - 90) * Math.PI/180;
+    const endAngle = ((i+1) * anglePerSlice - 90) * Math.PI/180;
+    const x1 = cx + r * Math.cos(startAngle);
+    const y1 = cy + r * Math.sin(startAngle);
+    const x2 = cx + r * Math.cos(endAngle);
+    const y2 = cy + r * Math.sin(endAngle);
+    const largeArc = anglePerSlice > 180 ? 1 : 0;
+    const fill = i < shaded ? "#F59E0B" : "#F3F4F6";
+    slices += `<path d="M${cx},${cy} L${x1},${y1} A${r},${r} 0 ${largeArc} 1 ${x2},${y2} Z" fill="${fill}" stroke="#4F46E5" stroke-width="2.5"/>`;
+  }
+  return `<div><svg width="${size}" height="${size}" viewBox="0 0 160 160">${slices}</svg>
+    <div class="fraction-label">Gambar Pecahan</div></div>`;
+}
+
+// Menggambar garis bilangan dengan penanda pada nilai tertentu
+function renderNumberLine(min, max, step, markValue){
+  const width = 480, height = 70;
+  const padding = 30;
+  const usableWidth = width - padding*2;
+  const totalSteps = (max - min) / step;
+  let ticks = "";
+  for(let i = 0; i <= totalSteps; i++){
+    const val = min + i*step;
+    const x = padding + (usableWidth * i / totalSteps);
+    ticks += `<line x1="${x}" y1="30" x2="${x}" y2="42" stroke="#4F46E5" stroke-width="2"/>`;
+    ticks += `<text x="${x}" y="58" font-size="12" fill="#374151" text-anchor="middle" font-weight="700">${val}</text>`;
+  }
+  const markX = padding + (usableWidth * (markValue - min) / step / totalSteps);
+  return `<svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">
+    <line x1="${padding}" y1="36" x2="${width-padding}" y2="36" stroke="#4F46E5" stroke-width="3"/>
+    ${ticks}
+    <circle cx="${markX}" cy="36" r="9" fill="#EF4444" stroke="#fff" stroke-width="2"/>
+  </svg>`;
+}
+
+
+// Menggambar satu bangun datar sederhana sebagai SVG berdasarkan nama bentuknya
+function renderShapeSVG(shapeName, fillColor){
+  const size = 90;
+  const c = fillColor || "#818CF8";
+  const stroke = "#3730A3";
+  let inner = "";
+  switch(shapeName){
+    case "persegi":
+      inner = `<rect x="12" y="12" width="66" height="66" fill="${c}" stroke="${stroke}" stroke-width="3"/>`;
+      break;
+    case "persegi_kecil":
+      inner = `<rect x="20" y="20" width="50" height="50" fill="${c}" stroke="${stroke}" stroke-width="3"/>`;
+      break;
+    case "persegi_panjang":
+      inner = `<rect x="6" y="24" width="78" height="42" fill="${c}" stroke="${stroke}" stroke-width="3"/>`;
+      break;
+    case "segitiga_siku_kiri":
+      inner = `<polygon points="10,78 10,10 80,78" fill="${c}" stroke="${stroke}" stroke-width="3"/>`;
+      break;
+    case "segitiga_siku_kanan":
+      inner = `<polygon points="80,78 80,10 10,78" fill="${c}" stroke="${stroke}" stroke-width="3"/>`;
+      break;
+    case "segitiga_sama_sisi":
+      inner = `<polygon points="45,10 80,78 10,78" fill="${c}" stroke="${stroke}" stroke-width="3"/>`;
+      break;
+    case "trapesium":
+      inner = `<polygon points="25,12 65,12 82,78 8,78" fill="${c}" stroke="${stroke}" stroke-width="3"/>`;
+      break;
+    case "jajar_genjang":
+      inner = `<polygon points="25,15 82,15 65,75 8,75" fill="${c}" stroke="${stroke}" stroke-width="3"/>`;
+      break;
+    default:
+      inner = `<rect x="12" y="12" width="66" height="66" fill="${c}" stroke="${stroke}" stroke-width="3"/>`;
+  }
+  return `<svg width="${size}" height="${size}" viewBox="0 0 90 90">${inner}</svg>`;
+}
+
+// Menampilkan visual komposisi: beberapa bangun (pieces) digabung dengan simbol '+' lalu '=' menuju hasil gabungan
+// pieces: array of {shape, color}, resultShape: {shape, color}
+function renderComposition(pieces, resultShape){
+  let html = `<div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap; justify-content:center;">`;
+  pieces.forEach((p, idx)=>{
+    html += `<div>${renderShapeSVG(p.shape, p.color)}</div>`;
+    if(idx < pieces.length - 1){
+      html += `<div style="font-size:1.6rem; font-weight:800; color:#6B7280;">+</div>`;
+    }
+  });
+  html += `<div style="font-size:1.6rem; font-weight:800; color:#6B7280;">=</div>`;
+  html += `<div>${renderShapeSVG(resultShape.shape, resultShape.color)}</div>`;
+  html += `</div><div class="fraction-label">Menyusun Bangun Datar</div>`;
+  return html;
+}
+
+// Menggambar satu bangun datar besar dengan garis pembagi di dalamnya untuk memvisualisasikan dekomposisi (penguraian)
+function renderDecomposition(decomposeType, color){
+  const size = 160;
+  const c = color || "#818CF8";
+  const stroke = "#3730A3";
+  const lineColor = "#EF4444";
+  let shape = "";
+  let lines = "";
+  switch(decomposeType){
+    case "persegi_diagonal":
+      shape = `<rect x="20" y="20" width="120" height="120" fill="${c}" stroke="${stroke}" stroke-width="3"/>`;
+      lines = `<line x1="20" y1="20" x2="140" y2="140" stroke="${lineColor}" stroke-width="3" stroke-dasharray="6,4"/>`;
+      break;
+    case "persegi_2_horizontal":
+      shape = `<rect x="20" y="20" width="120" height="120" fill="${c}" stroke="${stroke}" stroke-width="3"/>`;
+      lines = `<line x1="20" y1="80" x2="140" y2="80" stroke="${lineColor}" stroke-width="3" stroke-dasharray="6,4"/>`;
+      break;
+    case "persegi_4_grid":
+      shape = `<rect x="20" y="20" width="120" height="120" fill="${c}" stroke="${stroke}" stroke-width="3"/>`;
+      lines = `<line x1="80" y1="20" x2="80" y2="140" stroke="${lineColor}" stroke-width="3" stroke-dasharray="6,4"/>
+               <line x1="20" y1="80" x2="140" y2="80" stroke="${lineColor}" stroke-width="3" stroke-dasharray="6,4"/>`;
+      break;
+    case "persegipanjang_2_vertikal":
+      shape = `<rect x="10" y="40" width="140" height="70" fill="${c}" stroke="${stroke}" stroke-width="3"/>`;
+      lines = `<line x1="80" y1="40" x2="80" y2="110" stroke="${lineColor}" stroke-width="3" stroke-dasharray="6,4"/>`;
+      break;
+    case "persegipanjang_3_vertikal":
+      shape = `<rect x="10" y="40" width="140" height="70" fill="${c}" stroke="${stroke}" stroke-width="3"/>`;
+      lines = `<line x1="56" y1="40" x2="56" y2="110" stroke="${lineColor}" stroke-width="3" stroke-dasharray="6,4"/>
+               <line x1="103" y1="40" x2="103" y2="110" stroke="${lineColor}" stroke-width="3" stroke-dasharray="6,4"/>`;
+      break;
+    case "segitiga_tengah":
+      shape = `<polygon points="80,20 140,140 20,140" fill="${c}" stroke="${stroke}" stroke-width="3"/>`;
+      lines = `<line x1="80" y1="20" x2="80" y2="140" stroke="${lineColor}" stroke-width="3" stroke-dasharray="6,4"/>`;
+      break;
+    case "jajargenjang_diagonal":
+      shape = `<polygon points="45,20 140,20 115,140 20,140" fill="${c}" stroke="${stroke}" stroke-width="3"/>`;
+      lines = `<line x1="45" y1="20" x2="115" y2="140" stroke="${lineColor}" stroke-width="3" stroke-dasharray="6,4"/>`;
+      break;
+    default:
+      shape = `<rect x="20" y="20" width="120" height="120" fill="${c}" stroke="${stroke}" stroke-width="3"/>`;
+  }
+  return `<div><svg width="${size}" height="${size}" viewBox="0 0 160 160">${shape}${lines}</svg>
+    <div class="fraction-label">Bangun untuk Diurai</div></div>`;
+}
+
+// Menampilkan visual pada soal saat ini jika tersedia
+function renderVisual(visual){
+  const wrap = document.getElementById('visualWrap');
+  if(!visual){
+    wrap.innerHTML = "";
+    return;
+  }
+  if(visual.type === 'fraction'){
+    wrap.innerHTML = renderFractionCircle(visual.parts, visual.shaded);
+  } else if(visual.type === 'number_line'){
+    wrap.innerHTML = renderNumberLine(visual.min, visual.max, visual.step, visual.mark);
+  } else if(visual.type === 'composition'){
+    wrap.innerHTML = renderComposition(visual.pieces, visual.result);
+  } else if(visual.type === 'decomposition'){
+    wrap.innerHTML = renderDecomposition(visual.shape, visual.color);
+  } else {
+    wrap.innerHTML = "";
+  }
+}
+
+function shuffleQuestions(){
+  shuffleArray(questions);
+  questions.forEach(q=>{
+    const correctText = q.opts[q.correct];
+    shuffleArray(q.opts);
+    q.correct = q.opts.indexOf(correctText);
+  });
+}
+shuffleQuestions();
+
+function startQuiz(){
+  document.getElementById('startScreen').classList.add('hidden');
+  document.getElementById('quizScreen').classList.remove('hidden');
+  currentIndex = 0;
+  correctCount = 0;
+  loadQuestion();
+}
+
+function loadQuestion(){
+  answered = false;
+  const q = questions[currentIndex];
+  document.getElementById('questionBadge').textContent = "Soal " + (currentIndex+1);
+  document.getElementById('progressLabel').textContent = "Soal " + (currentIndex+1) + " dari " + questions.length;
+  document.getElementById('progressBar').style.width = ((currentIndex)/questions.length*100) + "%";
+  document.getElementById('questionText').textContent = q.q;
+  renderVisual(q.visual);
+  const wrap = document.getElementById('optionsWrap');
+  wrap.innerHTML = "";
+  q.opts.forEach((opt, i)=>{
+    const btn = document.createElement('button');
+    btn.className = "option-btn";
+    btn.textContent = opt;
+    btn.onclick = ()=>selectAnswer(i);
+    wrap.appendChild(btn);
+  });
+  document.getElementById('feedback').classList.remove('show','correct-fb','wrong-fb');
+  document.getElementById('nextBtn').classList.remove('show');
+}
+
+function selectAnswer(i){
+  if(answered) return;
+  answered = true;
+  const q = questions[currentIndex];
+  const buttons = document.querySelectorAll('.option-btn');
+  buttons.forEach((b, idx)=>{
+    b.disabled = true;
+    if(idx === q.correct) b.classList.add('correct');
+    if(idx === i && i !== q.correct) b.classList.add('wrong');
+  });
+  const fb = document.getElementById('feedback');
+  const fbTitle = document.getElementById('feedbackTitle');
+  const fbExplain = document.getElementById('feedbackExplain');
+  if(i === q.correct){
+    correctCount++;
+    fb.classList.add('show','correct-fb');
+    fbTitle.textContent = "✅ BENAR!";
+  } else {
+    fb.classList.add('show','wrong-fb');
+    fbTitle.textContent = "❌ SALAH";
+  }
+  fbExplain.textContent = "Penjelasan: " + q.exp;
+  document.getElementById('nextBtn').classList.add('show');
+  document.getElementById('nextBtn').textContent = (currentIndex === questions.length-1) ? "Selesai 🏁" : "Lanjut ➡️";
+}
+
+function nextQuestion(){
+  currentIndex++;
+  if(currentIndex >= questions.length){
+    document.getElementById('quizScreen').classList.add('hidden');
+    document.getElementById('formScreen').classList.remove('hidden');
+    return;
+  }
+  loadQuestion();
+}
+
+function getStarLevel(score){
+  if(score === 50) return 5;
+  if(score >= 40) return 4;
+  if(score >= 30) return 3;
+  if(score >= 20) return 2;
+  if(score >= 10) return 1;
+  return 0;
+}
+
+let certData = {name:"", school:"", date:"", certNumber:""};
+
+function showResult(){
+  const name = document.getElementById('studentName').value.trim();
+  const school = document.getElementById('schoolName').value.trim();
+  if(!name || !school){
+    alert("Yuk isi nama dan asal sekolah dulu ya! 😊");
+    return;
+  }
+  const today = new Date();
+  const dateStr = today.toLocaleDateString('id-ID', {day:'2-digit', month:'long', year:'numeric'});
+  const rawForHash = name + "|" + school + "|" + dateStr;
+  const hash = md5(rawForHash).toUpperCase();
+  const certNumber = "CMP-" + hash.substring(0,12);
+
+  certData = {name, school, date:dateStr, certNumber};
+
+  document.getElementById('formScreen').classList.add('hidden');
+  document.getElementById('resultScreen').classList.remove('hidden');
+
+  const stars = getStarLevel(correctCount);
+  document.getElementById('scoreNum').textContent = correctCount;
+  document.getElementById('starsDisplay').textContent = "⭐".repeat(stars) + "☆".repeat(5-stars);
+
+  let emoji = "🏆", title = "Kerja Bagus!", msg = "";
+  if(stars === 5){ emoji="🥇"; title="LUAR BIASA! SEMPURNA!"; msg="Kamu menjawab semua soal dengan benar! Kamu bintang 5! 🌟🌟🌟🌟🌟"; }
+  else if(stars === 4){ emoji="🏅"; title="HEBAT SEKALI!"; msg="Kamu bintang 4! Sedikit lagi menuju sempurna, terus semangat!"; }
+  else if(stars === 3){ emoji="😄"; title="BAGUS!"; msg="Kamu bintang 3! Terus berlatih supaya makin jago ya!"; }
+  else if(stars === 2){ emoji="🙂"; title="LUMAYAN!"; msg="Kamu bintang 2! Yuk latihan lagi supaya lebih pintar!"; }
+  else if(stars === 1){ emoji="💪"; title="JANGAN MENYERAH!"; msg="Kamu bintang 1! Ayo coba lagi, pasti kamu bisa lebih baik!"; }
+  else { emoji="🌱"; title="TERUS BELAJAR!"; msg="Belum ada bintang nih, tapi jangan sedih! Ayo latihan lagi ya, kamu pasti bisa!"; }
+
+  document.getElementById('resultEmoji').textContent = emoji;
+  document.getElementById('resultTitle').textContent = title;
+  document.getElementById('resultMessage').textContent = msg;
+  document.getElementById('certNumberNote').textContent = "Nomor Sertifikat: " + certNumber;
+}
+
+// Menggambar satu bintang (5 titik) pada koordinat (cx, cy) dengan radius r
+// filled = true -> bintang emas penuh, filled = false -> bintang outline abu-abu
+function drawStarPoints(doc, cx, cy, outerR, innerR, filled){
+  const points = [];
+  const totalPoints = 5;
+  for(let i = 0; i < totalPoints * 2; i++){
+    const r = (i % 2 === 0) ? outerR : innerR;
+    const angle = (Math.PI / totalPoints) * i - Math.PI / 2;
+    points.push([cx + r * Math.cos(angle), cy + r * Math.sin(angle)]);
+  }
+  const lines = [];
+  for(let i = 1; i < points.length; i++){
+    lines.push([points[i][0]-points[i-1][0], points[i][1]-points[i-1][1]]);
+  }
+  lines.push([points[0][0]-points[points.length-1][0], points[0][1]-points[points.length-1][1]]);
+
+  if(filled){
+    doc.setFillColor(251,191,36); // gold
+    doc.setDrawColor(217,119,6);
+  } else {
+    doc.setFillColor(255,255,255);
+    doc.setDrawColor(209,213,219); // light gray outline
+  }
+  doc.setLineWidth(1);
+  doc.lines(lines, points[0][0], points[0][1], [1,1], filled ? 'FD' : 'FD', true);
+}
+
+// Menggambar baris bintang: 'filledCount' bintang emas dari total 'totalCount', berpusat di x
+function drawStarRow(doc, xCenter, y, filledCount, totalCount, spacing){
+  const startX = xCenter - ((totalCount - 1) * spacing) / 2;
+  for(let i = 0; i < totalCount; i++){
+    const cx = startX + i * spacing;
+    drawStarPoints(doc, cx, y, 11, 4.3, i < filledCount);
+  }
+}
+
+function downloadCertificate(){
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({orientation:'landscape', unit:'pt', format:'a4'});
+  const w = doc.internal.pageSize.getWidth();
+  const h = doc.internal.pageSize.getHeight();
+  const stars = getStarLevel(correctCount);
+
+  // Background
+  doc.setFillColor(240,244,255);
+  doc.rect(0,0,w,h,'F');
+
+  // Outer border
+  doc.setDrawColor(79,70,229);
+  doc.setLineWidth(6);
+  doc.rect(20,20,w-40,h-40);
+
+  // Inner decorative border
+  doc.setDrawColor(251,191,36);
+  doc.setLineWidth(2);
+  doc.rect(34,34,w-68,h-68);
+
+  // Title
+  doc.setTextColor(55,48,163);
+  doc.setFont("helvetica","bold");
+  doc.setFontSize(34);
+  doc.text("SERTIFIKAT PENGHARGAAN", w/2, 95, {align:'center'});
+
+  doc.setFontSize(14);
+  doc.setTextColor(107,114,128);
+  doc.setFont("helvetica","normal");
+  doc.text("Latihan Komposisi & Dekomposisi Bangun Datar Seru - Kelas 4 SD", w/2, 118, {align:'center'});
+
+  // Diberikan kepada
+  doc.setFontSize(13);
+  doc.setTextColor(75,85,99);
+  doc.text("Dengan bangga sertifikat ini diberikan kepada:", w/2, 155, {align:'center'});
+
+  // Name
+  doc.setFont("helvetica","bold");
+  doc.setFontSize(30);
+  doc.setTextColor(30,27,75);
+  doc.text(certData.name, w/2, 195, {align:'center'});
+
+  // Underline for name
+  const nameWidth = doc.getTextWidth(certData.name);
+  doc.setDrawColor(79,70,229);
+  doc.setLineWidth(1.5);
+  doc.line(w/2 - nameWidth/2 - 10, 203, w/2 + nameWidth/2 + 10, 203);
+
+  // School
+  doc.setFont("helvetica","normal");
+  doc.setFontSize(14);
+  doc.setTextColor(75,85,99);
+  doc.text("dari sekolah " + certData.school, w/2, 225, {align:'center'});
+
+  // Achievement text
+  doc.setFontSize(13);
+  doc.text("Telah menyelesaikan 50 soal latihan Komposisi & Dekomposisi Bangun Datar dengan hasil:", w/2, 255, {align:'center'});
+
+  doc.setFont("helvetica","bold");
+  doc.setFontSize(20);
+  doc.setTextColor(16,185,129);
+  doc.text(correctCount + " dari 50 Jawaban BENAR", w/2, 280, {align:'center'});
+
+  // Stars (digambar manual dengan path, bukan karakter unicode, agar tampil dengan benar di semua PDF reader)
+  drawStarRow(doc, w/2, 305, stars, 5, 16);
+
+  doc.setFontSize(12);
+  doc.setTextColor(107,114,128);
+  doc.setFont("helvetica","italic");
+  doc.text("Predikat: Bintang " + stars, w/2, 335, {align:'center'});
+
+  // Bottom section: date, issuer, cert number
+  doc.setFont("helvetica","normal");
+  doc.setFontSize(11);
+  doc.setTextColor(75,85,99);
+  doc.text("Tanggal: " + certData.date, 90, h-90);
+  doc.text("Diterbitkan oleh: CMP Training", 90, h-72);
+
+  doc.text("Nomor Sertifikat:", w-90, h-90, {align:'right'});
+  doc.setFont("helvetica","bold");
+  doc.text(certData.certNumber, w-90, h-72, {align:'right'});
+
+  // Decorative emoji-like circle badge (drawn shapes since emoji unsupported reliably in jsPDF fonts)
+  doc.setFillColor(79,70,229);
+  doc.circle(w/2, h-60, 22, 'F');
+  doc.setTextColor(255,255,255);
+  doc.setFont("helvetica","bold");
+  doc.setFontSize(16);
+  doc.text("CMP", w/2, h-55, {align:'center'});
+
+  doc.save("Sertifikat_" + certData.name.replace(/\s+/g,'_') + ".pdf");
+}
+</script>
+</body>
+</html>
