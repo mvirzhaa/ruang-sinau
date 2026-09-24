@@ -73,7 +73,10 @@ require __DIR__ . '/includes/admin_header.php';
 <div class="panel">
     <div class="panel-head">
         <h2>Semua Konten (<?= count($daftarTopik) ?>)</h2>
-        <a href="topik_form.php" class="btn btn-primary">+ Tambah Baru</a>
+        <div style="display:flex; gap:8px;">
+            <a href="impor_massal.php" class="btn btn-outline">📦 Impor Massal</a>
+            <a href="topik_form.php" class="btn btn-primary">+ Tambah Baru</a>
+        </div>
     </div>
 
     <form method="get" class="form-2col" style="grid-template-columns: 2fr 1fr 1fr; margin-bottom:18px;">

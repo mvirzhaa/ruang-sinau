@@ -188,6 +188,24 @@ function nama_file_aman(string $namaAsli): string
     return $base . '-' . substr(bin2hex(random_bytes(4)), 0, 8) . '.' . $ext;
 }
 
+/**
+ * Pemeriksaan cadangan saat finfo/libmagic salah menebak tipe berkas HTML
+ * sebagai application/octet-stream — ini terjadi pada berkas HTML sah yang
+ * membundel pustaka seperti jsPDF, karena ada string biner-terlihat di
+ * dalam kode pustaka tersebut (bukan indikasi berkas berbahaya).
+ *
+ * Kembalikan true hanya jika: tidak ada byte NUL (indikasi biner sungguhan)
+ * DAN isi diawali tag <html> atau <!DOCTYPE html> dalam 3000 karakter pertama.
+ */
+function konten_tampak_html(string $isi): bool
+{
+    if (str_contains($isi, "\0")) {
+        return false;
+    }
+    $awal = substr($isi, 0, 3000);
+    return (bool) preg_match('/<!doctype\s+html|<html[\s>]/i', $awal);
+}
+
 function catat_log(?int $adminId, string $aksi, string $detail = ''): void
 {
     try {

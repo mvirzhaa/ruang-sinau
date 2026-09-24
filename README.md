@@ -91,10 +91,20 @@ Mengubahnya menjadi data database akan berisiko merusak visualisasi tersebut. De
 "unggah berkas HTML", seluruh latihan yang sudah ada bisa langsung dipakai tanpa modifikasi.
 
 **Menambahkan latihan baru dari folder Google Drive Anda:**
+
+Cara tercepat — **Impor Massal** (untuk banyak berkas sekaligus):
+1. Di Google Drive, buka folder per kelas (mis. "Kelas 4 Done") yang berisi banyak berkas `.html`
+2. Pilih semua berkas di dalamnya, klik **Download** — Google Drive otomatis menzipkannya
+3. Di admin, buka **Impor Massal**, pilih Jenjang/Mata Pelajaran/Kelas tujuan, unggah zip tersebut
+4. Semua berkas HTML di dalam zip otomatis terdaftar sebagai **draf** — tinjau judulnya sebentar di menu Latihan & Materi, lalu terbitkan
+
+Cara satuan (untuk satu berkas):
 1. Unduh berkas `.html` dari Google Drive ke komputer Anda
 2. Di admin, buka **Latihan & Materi → Tambah Baru**
 3. Pilih Jenjang / Mata Pelajaran / Kelas yang sesuai (buat dulu jika belum ada)
 4. Unggah berkas `.html`, isi judul & deskripsi, atur status ke **Terbit**
+
+**Catatan untuk Impor Massal:** membutuhkan ekstensi PHP `zip` aktif di server (umumnya sudah aktif secara default di hosting shared PHP modern). Jika hosting Anda membatasi `upload_max_filesize` / `post_max_size` di bawah 80MB, sesuaikan `php.ini` atau pecah folder besar menjadi beberapa zip lebih kecil (per kelas biasanya sudah cukup kecil).
 
 ## Cara Kerja Materi
 

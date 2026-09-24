@@ -23,6 +23,7 @@ define('APP_ENV', 'development'); // ganti ke 'production' saat go-live (mematik
 // ---------- Unggah file ----------
 define('MAX_UPLOAD_LATIHAN_MB', 5);      // ukuran maksimum file HTML latihan soal
 define('MAX_UPLOAD_GAMBAR_MB', 3);       // ukuran maksimum gambar pada materi
+define('MAX_UPLOAD_ZIP_MB', 80);         // ukuran maksimum zip untuk impor massal
 define('UPLOAD_DIR_QUIZZES', __DIR__ . '/../uploads/quizzes/');
 define('UPLOAD_DIR_MATERI', __DIR__ . '/../uploads/materi/');
 define('UPLOAD_URL_QUIZZES', '/uploads/quizzes/');

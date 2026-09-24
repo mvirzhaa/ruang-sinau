@@ -55,7 +55,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     finfo_close($finfo);
                     $mimeDiizinkan = ['text/html', 'text/plain', 'application/xhtml+xml'];
 
-                    if (!in_array($mime, $mimeDiizinkan, true)) {
+                    $mimeDiterima = in_array($mime, $mimeDiizinkan, true);
+                    if (!$mimeDiterima && $mime === 'application/octet-stream') {
+                        // finfo kadang salah menebak HTML sah yang membundel pustaka
+                        // seperti jsPDF sebagai berkas biner — periksa isinya langsung.
+                        $mimeDiterima = konten_tampak_html((string) file_get_contents($file['tmp_name']));
+                    }
+
+                    if (!$mimeDiterima) {
                         $errors[] = 'Jenis berkas tidak dikenali sebagai HTML (terdeteksi: ' . h($mime) . ').';
                     } else {
                         $namaFileBaru = nama_file_aman($file['name']);

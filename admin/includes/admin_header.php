@@ -23,6 +23,7 @@ $menuAktif = $menuAktif ?? '';
 
             <div class="grup-label">Konten</div>
             <a href="topik.php" class="<?= $menuAktif === 'topik' ? 'aktif' : '' ?>">📝 Latihan &amp; Materi</a>
+            <a href="impor_massal.php" class="<?= $menuAktif === 'impor' ? 'aktif' : '' ?>">📦 Impor Massal</a>
             <a href="jenjang.php" class="<?= $menuAktif === 'jenjang' ? 'aktif' : '' ?>">🏫 Jenjang</a>
             <a href="mapel.php" class="<?= $menuAktif === 'mapel' ? 'aktif' : '' ?>">📘 Mata Pelajaran</a>
             <a href="kelas.php" class="<?= $menuAktif === 'kelas' ? 'aktif' : '' ?>">🎓 Kelas</a>
