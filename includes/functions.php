@@ -222,3 +222,23 @@ function catat_log(?int $adminId, string $aksi, string $detail = ''): void
         error_log('Gagal mencatat log aktivitas: ' . $e->getMessage());
     }
 }
+
+/**
+ * Memformat judul topik agar rapi dan enak dibaca:
+ * - Menghilangkan underscore (_) dan dash (-) menjadi spasi
+ * - Memisahkan teks dan angka yang menempel (misal: kelas6 -> Kelas 6)
+ * - Mengubah ke Title Case jika teks huruf kecil semua atau mengandung pemisah file
+ */
+function format_judul(string $judul): string
+{
+    if (str_contains($judul, '_') || preg_match('/\.html?$/i', $judul) || preg_match('/[a-zA-Z]+\d+/i', $judul)) {
+        $clean = preg_replace('/\.html?$/i', '', $judul);
+        $clean = str_replace(['_', '-'], ' ', $clean);
+        // Pisahkan huruf yang menempel dengan angka (misal: kelas6 -> kelas 6)
+        $clean = preg_replace('/([a-zA-Z]+)(\d+)/', '$1 $2', $clean);
+        $clean = preg_replace('/\s+/', ' ', trim($clean));
+        return mb_convert_case($clean, MB_CASE_TITLE, 'UTF-8');
+    }
+    return $judul;
+}
+

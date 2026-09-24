@@ -32,6 +32,7 @@ try {
     // abaikan — statistik bukan kebutuhan kritis
 }
 
+$topik['judul'] = format_judul($topik['judul']);
 $judul_halaman = $topik['judul'] . ' — ' . APP_NAME;
 $deskripsi_halaman = $topik['deskripsi'] ?: ($topik['judul'] . ' — ' . $topik['mapel_nama'] . ' ' . $topik['kelas_nama']);
 require __DIR__ . '/includes/header.php';

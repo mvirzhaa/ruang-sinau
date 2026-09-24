@@ -7,7 +7,7 @@ $urlTopik = url_publik('topik.php?slug=' . urlencode($t['slug']) . '&kelas=' . u
 ?>
 <a href="<?= h($urlTopik) ?>" class="kartu">
     <span class="emoji"><?= h($t['emoji'] ?: ($t['tipe'] === 'materi' ? '📘' : '📝')) ?></span>
-    <h3><?= h($t['judul']) ?></h3>
+    <h3><?= h(format_judul($t['judul'])) ?></h3>
     <p class="ket"><?= h($t['jenjang_nama']) ?> · <?= h($t['mapel_nama']) ?> · <?= h($t['kelas_nama']) ?></p>
     <div class="meta">
         <?php if ($t['tipe'] === 'materi'): ?>

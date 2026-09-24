@@ -58,7 +58,7 @@ require __DIR__ . '/includes/admin_header.php';
             <?php foreach ($terpopuler as $t): ?>
             <tr>
                 <td>
-                    <strong><?= h($t['judul']) ?></strong><br>
+                    <strong><?= h(format_judul($t['judul'])) ?></strong><br>
                     <span style="color:var(--muted); font-size:12.5px;"><?= h($t['mapel_nama']) ?></span>
                 </td>
                 <td style="text-align:right; white-space:nowrap;">👁 <?= (int)$t['dilihat'] ?></td>
@@ -77,7 +77,7 @@ require __DIR__ . '/includes/admin_header.php';
             <?php foreach ($terbaru as $t): ?>
             <tr>
                 <td>
-                    <strong><?= h($t['judul']) ?></strong><br>
+                    <strong><?= h(format_judul($t['judul'])) ?></strong><br>
                     <span style="color:var(--muted); font-size:12.5px;"><?= h($t['mapel_nama']) ?> · <?= waktu_relatif($t['created_at']) ?></span>
                 </td>
                 <td style="text-align:right;">

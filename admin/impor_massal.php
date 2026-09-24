@@ -115,6 +115,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $judulTag = trim(html_entity_decode(strip_tags($m[1]), ENT_QUOTES, 'UTF-8'));
             if ($judulTag !== '') $judul = $judulTag;
         }
+        $judul = format_judul($judul);
 
         $namaFileBaru = nama_file_aman($namaFileSaja);
         if (!rename($tmpPath, UPLOAD_DIR_QUIZZES . $namaFileBaru)) {
@@ -154,8 +155,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 function pretty_dari_nama_file(string $namaFile): string
 {
     $tanpaEkstensi = pathinfo($namaFile, PATHINFO_FILENAME);
-    $spasi = str_replace(['_', '-'], ' ', $tanpaEkstensi);
-    return mb_convert_case(trim($spasi), MB_CASE_TITLE, 'UTF-8');
+    return format_judul($tanpaEkstensi);
 }
 
 $pohon = $pdo->query(

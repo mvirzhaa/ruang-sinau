@@ -277,6 +277,8 @@ ul { padding-left: 1.2em; }
     flex-direction: column;
     gap: 10px;
     transition: border-color .15s ease, transform .15s ease;
+    min-width: 0;
+    overflow: hidden;
 }
 
 .kartu:hover { border-color: var(--primary); transform: translateY(-2px); }
@@ -287,10 +289,25 @@ ul { padding-left: 1.2em; }
     background: var(--primary-tint);
     display: flex; align-items: center; justify-content: center;
     font-size: 22px;
+    flex-shrink: 0;
 }
 
-.kartu h3 { margin: 0; font-size: 16.5px; font-weight: 700; line-height: 1.35; }
-.kartu p.ket { margin: 0; color: var(--muted); font-size: 13.5px; }
+.kartu h3 {
+    margin: 0;
+    font-size: 16.5px;
+    font-weight: 700;
+    line-height: 1.35;
+    overflow-wrap: break-word;
+    word-break: break-word;
+    hyphens: auto;
+}
+.kartu p.ket {
+    margin: 0;
+    color: var(--muted);
+    font-size: 13.5px;
+    overflow-wrap: break-word;
+    word-break: break-word;
+}
 
 .kartu .meta {
     display: flex;
@@ -358,8 +375,8 @@ ul { padding-left: 1.2em; }
     margin-bottom: 24px;
 }
 .topik-header .meta { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
-.topik-header h1 { font-size: 26px; margin: 0 0 10px; font-weight: 800; letter-spacing: -0.01em; }
-.topik-header p { color: var(--muted); margin: 0; max-width: 70ch; }
+.topik-header h1 { font-size: 26px; margin: 0 0 10px; font-weight: 800; letter-spacing: -0.01em; overflow-wrap: break-word; word-break: break-word; }
+.topik-header p { color: var(--muted); margin: 0; max-width: 70ch; overflow-wrap: break-word; word-break: break-word; }
 
 .frame-latihan {
     width: 100%;
