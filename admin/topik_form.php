@@ -12,6 +12,12 @@ if ($id) {
         set_flash('error', 'Konten tidak ditemukan.');
         redirect('topik.php');
     }
+} else {
+    $dataEdit = [
+        'tingkat' => 'mudah',
+        'jumlah_soal' => 50,
+        'status' => 'published',
+    ];
 }
 
 $errors = [];
@@ -26,7 +32,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $tingkat = in_array($_POST['tingkat'] ?? '', ['mudah', 'sedang', 'sulit'], true) ? $_POST['tingkat'] : null;
     $jumlahSoal = $_POST['jumlah_soal'] !== '' ? (int)$_POST['jumlah_soal'] : null;
     $emoji = trim($_POST['emoji'] ?? '') ?: ($tipe === 'materi' ? '📘' : '📝');
-    $status = ($_POST['status'] ?? 'draft') === 'published' ? 'published' : 'draft';
+    $status = ($_POST['status'] ?? 'published') === 'published' ? 'published' : 'draft';
     $kontenMateri = $_POST['konten'] ?? '';
 
     if ($kelasId <= 0) $errors[] = 'Kelas wajib dipilih.';
@@ -76,7 +82,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     }
                 }
             }
-        } elseif (!$dataEdit || !$dataEdit['file_path']) {
+        } elseif (!$id || empty($dataEdit['file_path'])) {
             $errors[] = 'Unggah berkas HTML latihan soal.';
         }
     } else {
@@ -93,11 +99,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         if ($id > 0) {
             // Jika ada file baru & tipe latihan, hapus file lama
-            if ($tipe === 'latihan' && $namaFileBaru && $dataEdit['file_path']) {
+            if ($tipe === 'latihan' && $namaFileBaru && !empty($dataEdit['file_path'])) {
                 $lama = UPLOAD_DIR_QUIZZES . $dataEdit['file_path'];
                 if (is_file($lama)) @unlink($lama);
             }
-            $filePathAkhir = $tipe === 'latihan' ? ($namaFileBaru ?: $dataEdit['file_path']) : null;
+            $filePathAkhir = $tipe === 'latihan' ? ($namaFileBaru ?: ($dataEdit['file_path'] ?? null)) : null;
 
             $stmt = $pdo->prepare(
                 'UPDATE topik SET kelas_id=:kelas_id, tipe=:tipe, judul=:judul, slug=:slug, deskripsi=:deskripsi,
@@ -156,7 +162,7 @@ $pohon = $pdo->query(
      ORDER BY j.urutan, m.urutan, k.urutan"
 )->fetchAll();
 
-$judul_admin = $dataEdit ? 'Ubah Konten' : 'Tambah Konten Baru';
+$judul_admin = $id ? 'Ubah Konten' : 'Tambah Konten Baru';
 $menuAktif = 'topik';
 require __DIR__ . '/includes/admin_header.php';
 ?>
@@ -278,13 +284,13 @@ require __DIR__ . '/includes/admin_header.php';
     <div class="form-row">
         <label for="status">Status</label>
         <select id="status" name="status">
-            <option value="draft" <?= ($dataEdit['status'] ?? 'draft') === 'draft' ? 'selected' : '' ?>>Draf (belum tampil di situs)</option>
-            <option value="published" <?= ($dataEdit['status'] ?? '') === 'published' ? 'selected' : '' ?>>Terbit (tampil di situs)</option>
+            <option value="draft" <?= ($dataEdit['status'] ?? '') === 'draft' ? 'selected' : '' ?>>Draf (belum tampil di situs)</option>
+            <option value="published" <?= ($dataEdit['status'] ?? 'published') === 'published' ? 'selected' : '' ?>>Terbit (tampil di situs)</option>
         </select>
     </div>
 
     <div class="form-actions">
-        <button type="submit" class="btn btn-primary" id="btn-simpan"><?= $dataEdit ? 'Simpan Perubahan' : 'Simpan Konten' ?></button>
+        <button type="submit" class="btn btn-primary" id="btn-simpan"><?= $id ? 'Simpan Perubahan' : 'Simpan Konten' ?></button>
         <a href="topik.php" class="btn btn-outline">Batal</a>
     </div>
 </form>

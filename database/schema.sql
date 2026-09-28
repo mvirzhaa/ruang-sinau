@@ -79,7 +79,7 @@ CREATE TABLE IF NOT EXISTS topik (
     file_path       VARCHAR(255) NULL,      -- relatif ke /uploads/quizzes/ (tipe=latihan)
     konten          LONGTEXT NULL,          -- html materi yang sudah disanitasi (tipe=materi)
     emoji           VARCHAR(10) NULL DEFAULT '📝',
-    status          ENUM('draft','published') NOT NULL DEFAULT 'draft',
+    status          ENUM('draft','published') NOT NULL DEFAULT 'published',
     dilihat         INT UNSIGNED NOT NULL DEFAULT 0,
     dibuat_oleh     INT UNSIGNED NULL,
     created_at      DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
