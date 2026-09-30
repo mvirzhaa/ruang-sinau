@@ -34,6 +34,32 @@ define('LOGIN_MAX_ATTEMPTS', 5);         // percobaan login gagal sebelum dikunc
 define('LOGIN_LOCKOUT_MINUTES', 15);     // lama penguncian setelah gagal berkali-kali
 define('SESSION_NAME', 'ruangsinau_admin_sid');
 
+// ---------- API mobile: token JWT ----------
+// PENTING: ganti JWT_SECRET dengan string acak panjang sebelum go-live
+// (mis. hasil dari bin2hex(random_bytes(32)) ). Siapa saja yang tahu nilai
+// ini bisa memalsukan token login — JANGAN pernah dibagikan / commit nilai asli.
+define('JWT_SECRET', 'ganti-dengan-string-acak-yang-sangat-panjang-sebelum-produksi');
+define('JWT_ISSUER', APP_NAME);
+define('JWT_ACCESS_TTL_MENIT', 15);      // umur access token
+define('JWT_REFRESH_TTL_HARI', 30);      // umur refresh token
+
+// ---------- API mobile: OTP (verifikasi email & reset password) ----------
+define('OTP_TTL_MENIT', 15);             // umur kode OTP
+define('OTP_MAX_ATTEMPTS', 5);           // percobaan salah kode sebelum kode dianggap kedaluwarsa
+define('APP_LOGIN_MAX_ATTEMPTS', 5);     // percobaan login/registrasi gagal sebelum dikunci sementara
+define('APP_LOGIN_LOCKOUT_MINUTES', 15);
+
+// ---------- Pengiriman email (verifikasi & reset password mobile) ----------
+// Kosongkan SMTP_HOST untuk mode pengembangan: email tidak benar-benar dikirim,
+// tapi isinya (termasuk kode OTP) ditulis ke storage/mail_log/*.html agar bisa ditest.
+define('SMTP_HOST', '');                 // mis. smtp.gmail.com — isi sebelum go-live
+define('SMTP_PORT', 587);
+define('SMTP_SECURE', 'tls');            // 'tls' (STARTTLS) atau 'ssl'
+define('SMTP_USER', '');
+define('SMTP_PASS', '');
+define('MAIL_FROM_EMAIL', 'no-reply@ruangsinau.test');
+define('MAIL_FROM_NAME', APP_NAME);
+
 // ---------- Zona waktu ----------
 date_default_timezone_set('Asia/Jakarta');
 

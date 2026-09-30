@@ -120,6 +120,36 @@ di-hardcode), Anda bisa menambahkan jenjang baru di luar SD/SMP/SMA — misalnya
 "Umum", atau "Pelatihan Guru" — langsung dari menu **Kelola Jenjang**, tanpa menyentuh kode
 sama sekali.
 
+## API Mobile (`/api/v1/`)
+
+Untuk aplikasi mobile (`ruang-sinau-mobile/`, React Native/Expo), situs ini menyediakan REST API
+JSON di `/api/v1/`. Akun pengguna aplikasi (`app_users`) terpisah dari `admin_users` — dikelola
+lewat menu admin **Pengguna Aplikasi**, atau didaftarkan sendiri lewat aplikasi mobile.
+
+**Sebelum dipakai, wajib diisi dulu di `config/config.php`:**
+- `JWT_SECRET` — string acak panjang (mis. `bin2hex(random_bytes(32))`), jangan pernah dibagikan.
+- `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS`, `MAIL_FROM_EMAIL` — untuk kirim kode OTP
+  verifikasi email & reset password. Selama `SMTP_HOST` kosong (mode `development`), email tidak
+  benar-benar terkirim — isinya (termasuk kode OTP) ditulis ke `storage/mail_log/*.html` supaya
+  alur registrasi/lupa-password tetap bisa ditest.
+
+**Autentikasi**: `Authorization: Bearer <access_token>` (JWT, umur 15 menit). Saat kedaluwarsa,
+tukar `refresh_token` (umur 30 hari, disimpan ter-hash & dirotasi tiap dipakai) lewat
+`POST /api/v1/auth/refresh`.
+
+**Endpoint auth**: `POST auth/register`, `POST auth/verify-email` (kode OTP 6 digit),
+`POST auth/resend-otp`, `POST auth/login`, `POST auth/refresh`, `POST auth/logout`,
+`POST auth/forgot-password`, `POST auth/reset-password`.
+
+**Endpoint profil**: `GET/PATCH me` (butuh Bearer token).
+
+**Endpoint konten** (publik, baca saja, mengikuti data yang sama dengan situs web —
+hanya status `published`): `GET jenjang`, `GET mapel?jenjang=`, `GET kelas?mapel=&jenjang=`,
+`GET topik?kelas=&mapel=&jenjang=`, `GET topik/detail?slug=&kelas=`, `GET search?q=`.
+
+Semua endpoint mengembalikan JSON `{"sukses": true, "data": {...}}` atau
+`{"sukses": false, "error": {"kode": "...", "pesan": "..."}}`.
+
 ## Catatan Keamanan
 
 - Semua query database memakai *prepared statement* (PDO) — aman dari SQL injection.
