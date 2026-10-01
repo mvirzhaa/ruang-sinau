@@ -16,12 +16,12 @@ class SimpleSmtp
     private $socket = null;
 
     public function __construct(
-        private readonly string $host,
-        private readonly int $port,
-        private readonly string $secure, // 'tls' | 'ssl' | ''
-        private readonly string $username,
-        private readonly string $password,
-        private readonly int $timeoutDetik = 15
+        private string $host,
+        private int $port,
+        private string $secure, // 'tls' | 'ssl' | ''
+        private string $username,
+        private string $password,
+        private int $timeoutDetik = 15
     ) {
     }
 

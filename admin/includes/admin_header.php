@@ -31,6 +31,7 @@ $menuAktif = $menuAktif ?? '';
             <div class="grup-label">Akun</div>
             <a href="profil.php" class="<?= $menuAktif === 'profil' ? 'aktif' : '' ?>">👤 Profil Saya</a>
             <a href="pengguna_app.php" class="<?= $menuAktif === 'pengguna_app' ? 'aktif' : '' ?>">📱 Pengguna Aplikasi</a>
+            <a href="pembelian.php" class="<?= $menuAktif === 'pembelian' ? 'aktif' : '' ?>">💳 Pembelian</a>
             <?php if ($admin['peran'] === 'super_admin'): ?>
             <a href="users.php" class="<?= $menuAktif === 'users' ? 'aktif' : '' ?>">🔑 Pengguna Admin</a>
             <a href="log.php" class="<?= $menuAktif === 'log' ? 'aktif' : '' ?>">🛡️ Log Aktivitas</a>

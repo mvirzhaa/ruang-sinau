@@ -24,7 +24,7 @@ if (!$kelas) {
     json_error(404, 'TIDAK_DITEMUKAN', 'Kelas tidak ditemukan.');
 }
 
-$sql = "SELECT id, tipe, judul, slug, deskripsi, tingkat, jumlah_soal, emoji, dilihat
+$sql = "SELECT id, tipe, judul, slug, deskripsi, tingkat, jumlah_soal, emoji, dilihat, berbayar_mobile, harga
         FROM topik WHERE kelas_id = :kelas_id AND status = 'published'";
 $params = ['kelas_id' => $kelas['id']];
 if ($filterTipe) {
@@ -35,11 +35,17 @@ $sql .= ' ORDER BY tipe DESC, judul';
 
 $stmt = $pdo->prepare($sql);
 $stmt->execute($params);
-$topikList = array_map(function (array $t): array {
+
+$userAplikasi = app_user_dari_access_token();
+$topikList = array_map(function (array $t) use ($pdo, $userAplikasi): array {
     $t['judul'] = format_judul($t['judul']);
     $t['id'] = (int)$t['id'];
     $t['jumlah_soal'] = $t['jumlah_soal'] !== null ? (int)$t['jumlah_soal'] : null;
     $t['dilihat'] = (int)$t['dilihat'];
+    $t['berbayar_mobile'] = (bool)$t['berbayar_mobile'];
+    $t['harga'] = $t['harga'] !== null ? (int)$t['harga'] : null;
+    $t['sudah_dibeli'] = !$t['berbayar_mobile']
+        || ($userAplikasi && user_sudah_beli_topik($pdo, (int)$userAplikasi['id'], $t['id']));
     return $t;
 }, $stmt->fetchAll());
 

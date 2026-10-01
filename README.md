@@ -17,6 +17,11 @@ terus menambahkan latihan soal baru maupun materi belajar lain lewat panel admin
 - Dasbor statistik (jumlah konten, dilihat, draf vs terbit)
 - Kelola Jenjang, Mata Pelajaran, Kelas (struktur sepenuhnya dinamis — bukan hanya SD/SMP/SMA)
 - Tambah/ubah/hapus Latihan Soal (unggah berkas `.html`) dan Materi (editor teks kaya bawaan)
+- Tandai topik sebagai **berbayar di aplikasi mobile** (beli sekali, bukan langganan) — situs web
+  tetap gratis untuk topik yang sama; kelola transaksi, setujui/tolak/refund, dan beri akses manual
+  lewat menu **Pembelian**
+- Manajemen pengguna aplikasi mobile (aktif/nonaktifkan akun, verifikasi manual) lewat menu
+  **Pengguna Aplikasi**
 - Manajemen pengguna admin (peran Admin / Super Admin)
 - Log aktivitas (jejak audit setiap perubahan)
 - Login dengan proteksi percobaan gagal berulang (brute-force protection)
@@ -146,6 +151,15 @@ tukar `refresh_token` (umur 30 hari, disimpan ter-hash & dirotasi tiap dipakai) 
 **Endpoint konten** (publik, baca saja, mengikuti data yang sama dengan situs web —
 hanya status `published`): `GET jenjang`, `GET mapel?jenjang=`, `GET kelas?mapel=&jenjang=`,
 `GET topik?kelas=&mapel=&jenjang=`, `GET topik/detail?slug=&kelas=`, `GET search?q=`.
+
+**Pembelian satu-kali per topik (khusus mobile)**: topik yang ditandai berbayar di admin
+mengembalikan `berbayar_mobile`, `harga`, dan `sudah_dibeli` di endpoint konten di atas — jika
+request menyertakan Bearer token dan pengguna belum membeli, field `konten`/`file_url` pada
+`topik/detail` dikosongkan (`null`) supaya app menampilkan layar beli. Alur beli:
+`POST pembelian` (body `{"topik_id": ...}`, butuh Bearer token) mencatat transaksi berstatus
+`menunggu` konfirmasi admin dari menu **Pembelian**; `GET pembelian` mengambil riwayat pembelian
+milik pengguna yang login. Belum terhubung ke payment gateway (Midtrans/Xendit) — konfirmasi
+pembayaran masih manual lewat panel admin.
 
 Semua endpoint mengembalikan JSON `{"sukses": true, "data": {...}}` atau
 `{"sukses": false, "error": {"kode": "...", "pesan": "..."}}`.

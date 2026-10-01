@@ -80,6 +80,8 @@ CREATE TABLE IF NOT EXISTS topik (
     konten          LONGTEXT NULL,          -- html materi yang sudah disanitasi (tipe=materi)
     emoji           VARCHAR(10) NULL DEFAULT '📝',
     status          ENUM('draft','published') NOT NULL DEFAULT 'published',
+    berbayar_mobile TINYINT(1) NOT NULL DEFAULT 0,   -- hanya berlaku di aplikasi mobile, situs web selalu gratis
+    harga           INT UNSIGNED NULL,               -- harga beli-sekali (rupiah) jika berbayar_mobile = 1
     dilihat         INT UNSIGNED NOT NULL DEFAULT 0,
     dibuat_oleh     INT UNSIGNED NULL,
     created_at      DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -175,6 +177,29 @@ CREATE TABLE IF NOT EXISTS app_login_attempts (
     ip_address  VARCHAR(45) NOT NULL,
     waktu       DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     KEY idx_app_attempts_lookup (email, ip_address, waktu)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- ---------------------------------------------------------
+-- 12. Pembelian satu-kali topik berbayar oleh pengguna aplikasi mobile
+-- ---------------------------------------------------------
+CREATE TABLE IF NOT EXISTS pembelian (
+    id              INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    user_id         INT UNSIGNED NOT NULL,
+    topik_id        INT UNSIGNED NOT NULL,
+    harga_dibayar   INT UNSIGNED NOT NULL,
+    metode          ENUM('manual','midtrans','xendit') NOT NULL DEFAULT 'manual',
+    status          ENUM('menunggu','berhasil','ditolak','refund') NOT NULL DEFAULT 'menunggu',
+    catatan         VARCHAR(255) NULL,
+    diproses_oleh   INT UNSIGNED NULL,
+    diproses_pada   DATETIME NULL,
+    created_at      DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at      DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    KEY idx_pembelian_user (user_id),
+    KEY idx_pembelian_topik (topik_id),
+    KEY idx_pembelian_status (status),
+    CONSTRAINT fk_pembelian_user FOREIGN KEY (user_id) REFERENCES app_users(id) ON DELETE CASCADE,
+    CONSTRAINT fk_pembelian_topik FOREIGN KEY (topik_id) REFERENCES topik(id) ON DELETE CASCADE,
+    CONSTRAINT fk_pembelian_admin FOREIGN KEY (diproses_oleh) REFERENCES admin_users(id) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- =========================================================

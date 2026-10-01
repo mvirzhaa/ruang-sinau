@@ -17,7 +17,7 @@ define('DB_CHARSET', 'utf8mb4');
 
 // ---------- Aplikasi ----------
 define('APP_NAME', 'Ruang Sinau');
-define('APP_URL', 'http://localhost/ruang-sinau'); // ganti ke URL asli saat go-live, TANPA garis miring di akhir
+define('APP_URL', 'http://192.168.195.2/ruang-sinau'); // ganti ke URL asli saat go-live, TANPA garis miring di akhir — dipakai untuk testing dari HP fisik di WiFi yang sama
 define('APP_ENV', 'development'); // ganti ke 'production' saat go-live (mematikan tampilan error PHP)
 
 // ---------- Unggah file ----------

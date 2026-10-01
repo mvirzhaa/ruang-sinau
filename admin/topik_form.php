@@ -34,9 +34,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $emoji = trim($_POST['emoji'] ?? '') ?: ($tipe === 'materi' ? '📘' : '📝');
     $status = ($_POST['status'] ?? 'published') === 'published' ? 'published' : 'draft';
     $kontenMateri = $_POST['konten'] ?? '';
+    $berbayarMobile = isset($_POST['berbayar_mobile']) ? 1 : 0;
+    $harga = $berbayarMobile && $_POST['harga'] !== '' ? (int)$_POST['harga'] : null;
 
     if ($kelasId <= 0) $errors[] = 'Kelas wajib dipilih.';
     if ($judul === '') $errors[] = 'Judul wajib diisi.';
+    if ($berbayarMobile && (!$harga || $harga <= 0)) $errors[] = 'Harga wajib diisi untuk topik berbayar.';
 
     $namaFileBaru = null;
 
@@ -108,21 +111,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt = $pdo->prepare(
                 'UPDATE topik SET kelas_id=:kelas_id, tipe=:tipe, judul=:judul, slug=:slug, deskripsi=:deskripsi,
                     tingkat=:tingkat, jumlah_soal=:jumlah_soal, file_path=:file_path, konten=:konten,
-                    emoji=:emoji, status=:status WHERE id=:id'
+                    emoji=:emoji, status=:status, berbayar_mobile=:berbayar_mobile, harga=:harga WHERE id=:id'
             );
             $stmt->execute([
                 'kelas_id' => $kelasId, 'tipe' => $tipe, 'judul' => $judul, 'slug' => $slug,
                 'deskripsi' => $deskripsi, 'tingkat' => $tipe === 'latihan' ? $tingkat : null,
                 'jumlah_soal' => $tipe === 'latihan' ? $jumlahSoal : null,
                 'file_path' => $filePathAkhir, 'konten' => $tipe === 'materi' ? $kontenMateri : null,
-                'emoji' => $emoji, 'status' => $status, 'id' => $id,
+                'emoji' => $emoji, 'status' => $status,
+                'berbayar_mobile' => $berbayarMobile, 'harga' => $harga, 'id' => $id,
             ]);
             catat_log($admin['id'], 'ubah_topik', $judul);
             set_flash('sukses', '"' . $judul . '" berhasil diperbarui.');
         } else {
             $stmt = $pdo->prepare(
-                'INSERT INTO topik (kelas_id, tipe, judul, slug, deskripsi, tingkat, jumlah_soal, file_path, konten, emoji, status, dibuat_oleh)
-                 VALUES (:kelas_id, :tipe, :judul, :slug, :deskripsi, :tingkat, :jumlah_soal, :file_path, :konten, :emoji, :status, :dibuat_oleh)'
+                'INSERT INTO topik (kelas_id, tipe, judul, slug, deskripsi, tingkat, jumlah_soal, file_path, konten, emoji, status, berbayar_mobile, harga, dibuat_oleh)
+                 VALUES (:kelas_id, :tipe, :judul, :slug, :deskripsi, :tingkat, :jumlah_soal, :file_path, :konten, :emoji, :status, :berbayar_mobile, :harga, :dibuat_oleh)'
             );
             $stmt->execute([
                 'kelas_id' => $kelasId, 'tipe' => $tipe, 'judul' => $judul, 'slug' => $slug,
@@ -130,7 +134,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 'jumlah_soal' => $tipe === 'latihan' ? $jumlahSoal : null,
                 'file_path' => $tipe === 'latihan' ? $namaFileBaru : null,
                 'konten' => $tipe === 'materi' ? $kontenMateri : null,
-                'emoji' => $emoji, 'status' => $status, 'dibuat_oleh' => $admin['id'],
+                'emoji' => $emoji, 'status' => $status,
+                'berbayar_mobile' => $berbayarMobile, 'harga' => $harga, 'dibuat_oleh' => $admin['id'],
             ]);
             catat_log($admin['id'], 'tambah_topik', $judul);
             set_flash('sukses', '"' . $judul . '" berhasil ditambahkan.');
@@ -147,7 +152,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $dataEdit = array_merge($dataEdit ?? [], [
         'kelas_id' => $kelasId, 'tipe' => $tipe, 'judul' => $judul, 'deskripsi' => $deskripsi,
         'tingkat' => $tingkat, 'jumlah_soal' => $jumlahSoal, 'emoji' => $emoji, 'status' => $status,
-        'konten' => $kontenMateri,
+        'konten' => $kontenMateri, 'berbayar_mobile' => $berbayarMobile, 'harga' => $harga,
     ]);
 }
 
@@ -282,6 +287,18 @@ require __DIR__ . '/includes/admin_header.php';
     </div>
 
     <div class="form-row">
+        <label style="display:flex; align-items:center; gap:6px; font-weight:600;">
+            <input type="checkbox" id="berbayar_mobile" name="berbayar_mobile" value="1" onchange="gantiBerbayar()"
+                <?= !empty($dataEdit['berbayar_mobile']) ? 'checked' : '' ?>> 💰 Berbayar di aplikasi mobile (beli sekali)
+        </label>
+        <span class="bantuan">Hanya berlaku di aplikasi mobile — situs web tetap menampilkan konten ini gratis untuk semua pengunjung.</span>
+    </div>
+    <div class="form-row" id="blok-harga" style="display:<?= !empty($dataEdit['berbayar_mobile']) ? 'block' : 'none' ?>;">
+        <label for="harga">Harga (Rp)</label>
+        <input type="number" id="harga" name="harga" min="1" step="1" value="<?= h((string)($dataEdit['harga'] ?? '')) ?>">
+    </div>
+
+    <div class="form-row">
         <label for="status">Status</label>
         <select id="status" name="status">
             <option value="draft" <?= ($dataEdit['status'] ?? '') === 'draft' ? 'selected' : '' ?>>Draf (belum tampil di situs)</option>
@@ -373,6 +390,11 @@ function gantiTipe(tipe) {
 }
 var tipeAwal = document.querySelector('input[name=tipe]:checked');
 gantiTipe(tipeAwal ? tipeAwal.value : 'latihan');
+
+// ---------- Toggle blok harga (hanya saat berbayar_mobile dicentang) ----------
+function gantiBerbayar() {
+    document.getElementById('blok-harga').style.display = document.getElementById('berbayar_mobile').checked ? 'block' : 'none';
+}
 
 // ---------- Editor materi sederhana ----------
 function fmt(perintah, nilai) {

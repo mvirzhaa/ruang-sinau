@@ -99,7 +99,12 @@ require __DIR__ . '/includes/admin_header.php';
         <tbody>
         <?php foreach ($daftarTopik as $t): ?>
             <tr>
-                <td><strong><?= h(format_judul($t['judul'])) ?></strong></td>
+                <td>
+                    <strong><?= h(format_judul($t['judul'])) ?></strong>
+                    <?php if (!empty($t['berbayar_mobile'])): ?>
+                        <span class="status-pill published" style="margin-left:6px;" title="Berbayar di aplikasi mobile">💰 <?= h(format_rupiah((int)$t['harga'])) ?></span>
+                    <?php endif; ?>
+                </td>
                 <td style="color:var(--muted); font-size:12.5px;"><?= h($t['jenjang_nama']) ?> / <?= h($t['mapel_nama']) ?> / <?= h($t['kelas_nama']) ?></td>
                 <td><?= $t['tipe'] === 'materi' ? '📘 Materi' : '📝 Latihan' ?></td>
                 <td>👁 <?= (int)$t['dilihat'] ?></td>

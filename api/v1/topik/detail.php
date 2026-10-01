@@ -33,8 +33,13 @@ try {
     // abaikan — statistik bukan kebutuhan kritis
 }
 
+$berbayarMobile = (bool)$topik['berbayar_mobile'];
+$userAplikasi = app_user_dari_access_token();
+$sudahDibeli = !$berbayarMobile
+    || ($userAplikasi && user_sudah_beli_topik($pdo, (int)$userAplikasi['id'], (int)$topik['id']));
+
 $fileUrl = null;
-if ($topik['tipe'] === 'latihan' && $topik['file_path'] && file_exists(UPLOAD_DIR_QUIZZES . $topik['file_path'])) {
+if ($sudahDibeli && $topik['tipe'] === 'latihan' && $topik['file_path'] && file_exists(UPLOAD_DIR_QUIZZES . $topik['file_path'])) {
     $fileUrl = url_publik(ltrim(UPLOAD_URL_QUIZZES, '/') . $topik['file_path']);
 }
 
@@ -49,8 +54,11 @@ json_ok([
         'jumlah_soal' => $topik['jumlah_soal'] !== null ? (int)$topik['jumlah_soal'] : null,
         'emoji' => $topik['emoji'],
         'dilihat' => (int)$topik['dilihat'] + 1,
+        'berbayar_mobile' => $berbayarMobile,
+        'harga' => $topik['harga'] !== null ? (int)$topik['harga'] : null,
+        'sudah_dibeli' => $sudahDibeli,
         'file_url' => $fileUrl,
-        'konten' => $topik['tipe'] === 'materi' ? ($topik['konten'] ?: '') : null,
+        'konten' => ($sudahDibeli && $topik['tipe'] === 'materi') ? ($topik['konten'] ?: '') : null,
         'kelas_nama' => $topik['kelas_nama'],
         'kelas_slug' => $topik['kelas_slug'],
         'mapel_nama' => $topik['mapel_nama'],

@@ -10,6 +10,7 @@
 
 require_once __DIR__ . '/../../includes/functions.php';
 require_once __DIR__ . '/../../includes/app_auth.php';
+require_once __DIR__ . '/../../includes/pembelian.php';
 
 header('Content-Type: application/json; charset=utf-8');
 header('Access-Control-Allow-Origin: *');
