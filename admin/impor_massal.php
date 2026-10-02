@@ -18,6 +18,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         redirect('impor_massal.php');
     }
 
+    // Harga default berbayar mobile mengikuti jenjang kelas tujuan (lihat HARGA_DEFAULT_PER_JENJANG)
+    $hargaDefault = harga_default_untuk_kelas($pdo, $kelasId);
+    $berbayarDefault = $hargaDefault !== null ? 1 : 0;
+
     if (empty($_FILES['berkas_zip']['name'])) {
         set_flash('error', 'Unggah berkas .zip terlebih dahulu.');
         redirect('impor_massal.php');
@@ -128,12 +132,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $slug = slug_unik('topik', $slugDasar, 'kelas_id', $kelasId);
 
         $stmt = $pdo->prepare(
-            'INSERT INTO topik (kelas_id, tipe, judul, slug, file_path, emoji, status, dibuat_oleh)
-             VALUES (:kelas_id, "latihan", :judul, :slug, :file_path, "📝", :status, :dibuat_oleh)'
+            'INSERT INTO topik (kelas_id, tipe, judul, slug, file_path, emoji, status, berbayar_mobile, harga, dibuat_oleh)
+             VALUES (:kelas_id, "latihan", :judul, :slug, :file_path, "📝", :status, :berbayar_mobile, :harga, :dibuat_oleh)'
         );
         $stmt->execute([
             'kelas_id' => $kelasId, 'judul' => $judul, 'slug' => $slug,
-            'file_path' => $namaFileBaru, 'status' => $statusDefault, 'dibuat_oleh' => $admin['id'],
+            'file_path' => $namaFileBaru, 'status' => $statusDefault,
+            'berbayar_mobile' => $berbayarDefault, 'harga' => $hargaDefault, 'dibuat_oleh' => $admin['id'],
         ]);
 
         $diimpor++;
@@ -218,7 +223,7 @@ require __DIR__ . '/includes/admin_header.php';
         <div class="form-row">
             <label for="kelas_id">Kelas Tujuan</label>
             <select id="kelas_id" name="kelas_id" required></select>
-            <span class="bantuan">Semua latihan di dalam zip akan didaftarkan ke kelas ini.</span>
+            <span class="bantuan">Semua latihan di dalam zip akan didaftarkan ke kelas ini, dan otomatis ditandai berbayar di aplikasi mobile sesuai harga default jenjangnya (bisa diubah per topik nanti di menu Latihan & Materi).</span>
         </div>
         <div class="form-row">
             <label for="berkas_zip">Berkas .zip</label>

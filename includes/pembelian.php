@@ -6,6 +6,24 @@
  */
 
 require_once __DIR__ . '/functions.php';
+require_once __DIR__ . '/libs/MidtransClient.php';
+
+/** Klien Midtrans Snap siap pakai, dikonfigurasi dari config/config.php. */
+function midtrans(): MidtransClient
+{
+    return new MidtransClient(MIDTRANS_SERVER_KEY, MIDTRANS_IS_PRODUCTION);
+}
+
+/** Harga default (Rp) untuk topik baru di kelas ini berdasarkan jenjangnya; null jika jenjang tidak terdaftar di HARGA_DEFAULT_PER_JENJANG. */
+function harga_default_untuk_kelas(PDO $pdo, int $kelasId): ?int
+{
+    $stmt = $pdo->prepare(
+        'SELECT j.nama FROM kelas k JOIN mapel m ON m.id = k.mapel_id JOIN jenjang j ON j.id = m.jenjang_id WHERE k.id = :id'
+    );
+    $stmt->execute(['id' => $kelasId]);
+    $jenjang = $stmt->fetchColumn();
+    return $jenjang !== false ? (HARGA_DEFAULT_PER_JENJANG[$jenjang] ?? null) : null;
+}
 
 /** true jika user sudah membeli topik ini (transaksi berstatus 'berhasil'). */
 function user_sudah_beli_topik(PDO $pdo, int $userId, int $topikId): bool

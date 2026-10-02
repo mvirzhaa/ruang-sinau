@@ -188,6 +188,9 @@ CREATE TABLE IF NOT EXISTS pembelian (
     topik_id        INT UNSIGNED NOT NULL,
     harga_dibayar   INT UNSIGNED NOT NULL,
     metode          ENUM('manual','midtrans','xendit') NOT NULL DEFAULT 'manual',
+    order_id        VARCHAR(64) NULL UNIQUE,         -- order_id Midtrans, format 'PMB-{id}'
+    snap_token      VARCHAR(255) NULL,               -- token Snap untuk halaman pembayaran
+    payment_url     VARCHAR(255) NULL,               -- redirect_url Snap
     status          ENUM('menunggu','berhasil','ditolak','refund') NOT NULL DEFAULT 'menunggu',
     catatan         VARCHAR(255) NULL,
     diproses_oleh   INT UNSIGNED NULL,

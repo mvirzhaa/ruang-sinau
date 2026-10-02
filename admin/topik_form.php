@@ -216,7 +216,7 @@ require __DIR__ . '/includes/admin_header.php';
     </div>
     <div class="form-row">
         <label for="kelas_id">Kelas</label>
-        <select id="kelas_id" name="kelas_id" required></select>
+        <select id="kelas_id" name="kelas_id" onchange="terapkanHargaDefault()" required></select>
     </div>
 
     <div class="form-row">
@@ -315,6 +315,9 @@ require __DIR__ . '/includes/admin_header.php';
 <script>
 var pohonData = <?= json_encode($pohon, JSON_UNESCAPED_UNICODE) ?>;
 var kelasTerpilihAwal = <?= (int)($dataEdit['kelas_id'] ?? 0) ?>;
+var hargaDefaultPerJenjang = <?= json_encode(HARGA_DEFAULT_PER_JENJANG, JSON_UNESCAPED_UNICODE) ?>;
+var modeBaru = <?= $id ? 'false' : 'true' ?>;
+var hargaDisentuhManual = false;
 
 function bangunPohon() {
     var jenjangMap = {};
@@ -376,6 +379,22 @@ function perbaruiPilihanKelas(kelasTerpilih) {
             sel.appendChild(opt);
         });
     }
+    terapkanHargaDefault();
+}
+
+// Untuk topik BARU: saat kelas (jadi jenjang) dipilih, otomatis centang berbayar & isi
+// harga sesuai HARGA_DEFAULT_PER_JENJANG — kecuali admin sudah mengubah manual kedua
+// field itu, supaya pilihan mereka tidak tertimpa.
+function terapkanHargaDefault() {
+    if (!modeBaru || hargaDisentuhManual) return;
+    var jid = document.getElementById('jenjang_pilih').value;
+    var namaJenjang = pohon[jid] ? pohon[jid].nama : null;
+    var harga = namaJenjang ? hargaDefaultPerJenjang[namaJenjang] : undefined;
+    var checkbox = document.getElementById('berbayar_mobile');
+    var inputHarga = document.getElementById('harga');
+    checkbox.checked = !!harga;
+    inputHarga.value = harga || '';
+    gantiBerbayar();
 }
 
 // Inisialisasi berdasarkan kelas yang sedang diedit (jika ada)
@@ -395,6 +414,8 @@ gantiTipe(tipeAwal ? tipeAwal.value : 'latihan');
 function gantiBerbayar() {
     document.getElementById('blok-harga').style.display = document.getElementById('berbayar_mobile').checked ? 'block' : 'none';
 }
+document.getElementById('berbayar_mobile').addEventListener('change', function () { hargaDisentuhManual = true; });
+document.getElementById('harga').addEventListener('input', function () { hargaDisentuhManual = true; });
 
 // ---------- Editor materi sederhana ----------
 function fmt(perintah, nilai) {

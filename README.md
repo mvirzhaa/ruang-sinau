@@ -28,7 +28,7 @@ terus menambahkan latihan soal baru maupun materi belajar lain lewat panel admin
 
 ## Kebutuhan Server
 
-- PHP 8.0 atau lebih baru, dengan ekstensi: `pdo_mysql`, `fileinfo`, `mbstring`
+- PHP 8.0 atau lebih baru, dengan ekstensi: `pdo_mysql`, `fileinfo`, `mbstring`, `curl` (dipakai untuk memanggil Midtrans Snap API)
 - MySQL 5.7+ / MariaDB 10.3+ (mendukung `FULLTEXT` index pada InnoDB)
 - Apache dengan `mod_rewrite` dan `mod_headers` (disarankan, tidak wajib)
 
@@ -44,7 +44,7 @@ terus menambahkan latihan soal baru maupun materi belajar lain lewat panel admin
    (SD, SMP, SMA).
 
 3. **Salin dan sesuaikan konfigurasi:**
-   - Buka `config/config.php`
+   - `cp config/config.example.php config/config.php` (`config.php` sengaja tidak dilacak git — lihat `.gitignore` — supaya kredensial production tidak pernah tertimpa `git pull` atau ter-commit tidak sengaja)
    - Isi `DB_HOST`, `DB_NAME`, `DB_USER`, `DB_PASS` sesuai kredensial hosting Anda
    - Ubah `APP_URL` ke alamat situs Anda yang sebenarnya (tanpa garis miring di akhir)
    - Ubah `APP_ENV` menjadi `'production'` setelah semua diuji berjalan lancar
@@ -156,10 +156,30 @@ hanya status `published`): `GET jenjang`, `GET mapel?jenjang=`, `GET kelas?mapel
 mengembalikan `berbayar_mobile`, `harga`, dan `sudah_dibeli` di endpoint konten di atas — jika
 request menyertakan Bearer token dan pengguna belum membeli, field `konten`/`file_url` pada
 `topik/detail` dikosongkan (`null`) supaya app menampilkan layar beli. Alur beli:
-`POST pembelian` (body `{"topik_id": ...}`, butuh Bearer token) mencatat transaksi berstatus
-`menunggu` konfirmasi admin dari menu **Pembelian**; `GET pembelian` mengambil riwayat pembelian
-milik pengguna yang login. Belum terhubung ke payment gateway (Midtrans/Xendit) — konfirmasi
-pembayaran masih manual lewat panel admin.
+`POST pembelian` (body `{"topik_id": ...}`, butuh Bearer token) membuat transaksi **Midtrans
+Snap** dan mengembalikan `payment_url` (buka di WebView/browser app) beserta `snap_token`;
+status awal `menunggu`. Jika dipanggil lagi sebelum transaksi tuntas, endpoint mengembalikan
+`payment_url` yang sama (tidak membuat transaksi baru). `GET pembelian` mengambil riwayat
+pembelian milik pengguna yang login.
+
+Status transaksi diperbarui otomatis oleh **webhook** `POST api/v1/pembelian/notifikasi.php`
+yang dipanggil server-to-server oleh Midtrans (diverifikasi lewat `signature_key`, bukan Bearer
+token) — jadi status `menunggu` → `berhasil`/`ditolak` tanpa campur tangan admin. Admin tetap
+bisa menyetujui/menolak manual dari menu **Pembelian** sebagai jalur cadangan jika webhook gagal
+terkirim, atau memberi akses komplimen lewat **Beri Akses Manual**.
+
+**Setup Midtrans sebelum fitur beli bisa dipakai:**
+1. Daftar di https://dashboard.sandbox.midtrans.com (sandbox, gratis, untuk testing — tidak ada
+   uang asli). Saat go-live, daftar akun production di https://dashboard.midtrans.com dan lakukan
+   aktivasi bisnis.
+2. Di dashboard, buka **Settings → Access Keys**, salin **Server Key** dan **Client Key**.
+3. Isi di `config/config.php`: `MIDTRANS_SERVER_KEY`, `MIDTRANS_CLIENT_KEY`. Biarkan
+   `MIDTRANS_IS_PRODUCTION` bernilai `false` sampai siap go-live.
+4. Di dashboard, buka **Settings → Configuration**, isi **Payment Notification URL** dengan
+   `https://domain-anda.com/api/v1/pembelian/notifikasi.php` (wajib bisa diakses publik dari
+   internet — tidak bisa dites dari `localhost`/WiFi lokal tanpa tunnel seperti ngrok).
+5. Untuk testing pembayaran di sandbox, gunakan simulator Midtrans (nomor kartu/VA dummy) yang
+   didokumentasikan di https://docs.midtrans.com/docs/midtrans-simulator.
 
 Semua endpoint mengembalikan JSON `{"sukses": true, "data": {...}}` atau
 `{"sukses": false, "error": {"kode": "...", "pesan": "..."}}`.
